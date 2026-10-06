@@ -3,33 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>El Táo de Ojo</title>
+    <title>El Taco De Ojo</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-zinc-950 text-zinc-100 font-sans min-h-screen pb-20 flex flex-col justify-between">
     <div class="max-w-md mx-auto w-full flex-grow">
+        <!-- Landing View -->
         <div id="landingView" class="p-6 flex flex-col items-center justify-center min-h-[90vh] text-center">
             <div class="w-24 h-24 rounded-full border-2 border-pink-500 p-1 mb-4 flex items-center justify-center">
                 <span class="text-4xl">🌮</span>
             </div>
-            <h1 class="text-3xl font-serif font-bold italic tracking-wide mb-1">El Táo de Ojo</h1>
+            <h1 class="text-3xl font-serif font-bold italic tracking-wide mb-1">El Taco De Ojo</h1>
             <p class="text-zinc-400 text-sm mb-3">Authentic Street Tacos & Specialties</p>
             
             <div class="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-3 mb-4 text-left">
                 <div class="flex justify-between items-center mb-1">
                     <label class="text-[11px] text-zinc-400 font-medium">📍 Active Truck Location:</label>
-                    <button onclick="openLocationManager()" class="text-[11px] text-pink-400 hover:underline">Manage Locations</button>
                 </div>
-                <select id="activeLocationSelect" onchange="changeActiveLocation(this.value)" class="w-full bg-zinc-950 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-200 focus:outline-none focus:border-pink-500"></select>
+                <div id="activeLocationDisplay" class="w-full bg-zinc-950 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-300 font-medium"></div>
             </div>
 
-            <div class="bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2 text-xs mb-6 text-emerald-400 flex items-center gap-2 w-full justify-center">
+            <div id="storeStatusBadge" class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-4 py-2 text-xs mb-6 text-emerald-400 flex items-center gap-2 w-full justify-center">
                 <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                Open Now • Serving Until 10 PM
+                <span id="storeStatusText">Open Now • Serving Until 10 PM</span>
             </div>
 
             <div class="w-full space-y-3">
-                <button onclick="switchView('menu')" class="w-full bg-pink-600 hover:bg-pink-500 text-white font-semibold py-3.5 rounded-xl transition shadow-lg shadow-pink-600/20">Start Order</button>
+                <button onclick="switchView('menu')" class="w-full bg-pink-600 hover:bg-pink-500 text-white font-semibold py-3.5 rounded-xl transition shadow-lg shadow-pink-600/25">Start Order</button>
                 <button onclick="switchView('tracker')" class="w-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-200 font-medium py-3 rounded-xl transition flex items-center justify-center gap-2 text-sm"><span>📍</span> Track Order Status</button>
             </div>
 
@@ -38,21 +38,21 @@
             </div>
         </div>
 
+        <!-- Menu View -->
         <div id="menuView" class="p-4 hidden">
             <div class="flex items-center justify-between mb-4 sticky top-0 bg-zinc-950/90 backdrop-blur py-2 z-10 border-b border-zinc-900">
                 <button onclick="switchView('landing')" class="text-zinc-400 text-sm hover:text-white">← Back</button>
                 <h2 class="font-bold text-lg">Order Menu</h2>
                 <div class="w-10"></div>
             </div>
+            
             <div class="bg-gradient-to-r from-pink-950/40 to-amber-950/40 border border-pink-500/30 rounded-xl p-3 mb-5 text-xs">
-                <div class="font-bold text-pink-400 mb-1 flex items-center gap-1"><span>🔥</span> Popular Item Highlights</div>
-                <div class="grid grid-cols-3 gap-2 text-center mt-2">
-                    <div class="bg-zinc-950/60 p-2 rounded-lg border border-zinc-800"><span class="text-[10px] text-zinc-400 block font-semibold">TODAY</span><span class="font-bold text-zinc-200 text-[11px] truncate block">Quesabirria</span></div>
-                    <div class="bg-zinc-950/60 p-2 rounded-lg border border-zinc-800"><span class="text-[10px] text-zinc-400 block font-semibold">THIS WEEK</span><span class="font-bold text-zinc-200 text-[11px] truncate block">Carne Asada Fries</span></div>
-                    <div class="bg-zinc-950/60 p-2 rounded-lg border border-zinc-800"><span class="text-[10px] text-zinc-400 block font-semibold">THIS MONTH</span><span class="font-bold text-zinc-200 text-[11px] truncate block">Tacos (Asada)</span></div>
-                </div>
+                <div class="font-bold text-pink-400 mb-1 flex items-center gap-1"><span>🔥</span> Clickable Popular Item Highlights</div>
+                <div id="popularHighlightsContainer" class="grid grid-cols-3 gap-2 text-center mt-2"></div>
             </div>
+
             <div id="menuContainer" class="space-y-6"></div>
+            
             <div class="fixed bottom-4 left-4 right-4 max-w-md mx-auto">
                 <button onclick="openCartModal()" class="w-full bg-pink-600 hover:bg-pink-500 text-white font-semibold py-3 rounded-xl shadow-xl flex justify-between px-5 items-center">
                     <span id="cartCountBadge" class="bg-pink-700 px-2 py-0.5 rounded-md text-xs font-bold">0 items</span>
@@ -62,6 +62,7 @@
             </div>
         </div>
 
+        <!-- Tracker View -->
         <div id="trackerView" class="p-4 hidden">
             <div class="flex items-center justify-between mb-4 border-b border-zinc-900 pb-2">
                 <button onclick="switchView('landing')" class="text-zinc-400 text-sm hover:text-white">← Back</button>
@@ -71,51 +72,64 @@
             <div class="space-y-3" id="activeOrdersList"></div>
         </div>
 
+        <!-- Owner View -->
         <div id="ownerView" class="p-4 hidden">
             <div class="flex items-center justify-between mb-4 border-b border-zinc-900 pb-2">
                 <button onclick="switchView('landing')" class="text-zinc-400 text-sm hover:text-white">← Logout</button>
                 <h2 class="font-bold text-lg text-amber-500">Owner Portal</h2>
                 <div class="w-10"></div>
             </div>
-            <div class="mb-6">
-                <button onclick="switchView('analytics')" class="w-full bg-amber-600/10 hover:bg-amber-600/20 border border-amber-500/30 text-amber-400 font-semibold py-3 rounded-xl transition flex items-center justify-between px-4">
-                    <span class="flex items-center gap-2">📊 View Performance & Analytics Graphs</span>
-                    <span>→</span>
-                </button>
+            
+            <div class="grid grid-cols-2 gap-2 mb-4">
+                <button onclick="switchView('analytics')" class="bg-amber-600/10 hover:bg-amber-600/20 border border-amber-500/30 text-amber-400 font-semibold py-2.5 rounded-xl text-xs transition">📊 Analytics & Graphs</button>
+                <button onclick="switchView('history')" class="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 font-semibold py-2.5 rounded-xl text-xs transition">📜 Order History</button>
             </div>
+
+            <div class="bg-zinc-900 border border-zinc-800 rounded-xl mb-4 p-4 space-y-3">
+                <h3 class="font-semibold text-sm text-zinc-300">Store Settings & Operations</h3>
+                <div class="flex items-center justify-between bg-zinc-950 p-2.5 rounded-lg border border-zinc-800 text-xs">
+                    <span>Store Status: <strong id="ownerStatusLabel" class="text-emerald-400">Open</strong></span>
+                    <button onclick="toggleStoreStatus()" class="bg-zinc-800 hover:bg-zinc-700 px-3 py-1 rounded text-xs font-semibold">Toggle Open/Closed</button>
+                </div>
+            </div>
+
             <div class="bg-zinc-900 border border-zinc-800 rounded-xl mb-4 p-4">
                 <h3 class="font-semibold text-sm text-zinc-300 mb-2">Manage Active Locations</h3>
                 <div id="ownerLocationList" class="space-y-2 mb-3"></div>
-                <button onclick="addNewLocationPrompt()" class="w-full bg-zinc-950 border border-zinc-800 text-pink-400 py-2 rounded-lg text-xs font-semibold">+ Add New Location</button>
+                <button onclick="openLocationManager()" class="w-full bg-zinc-950 border border-zinc-800 text-pink-400 py-2 rounded-lg text-xs font-semibold">+ Add / Edit Locations</button>
             </div>
+
             <h3 class="font-semibold text-sm text-zinc-400 mb-3">Incoming Orders Management</h3>
             <div class="space-y-3 mb-6" id="ownerOrdersList"></div>
         </div>
 
+        <!-- History View -->
+        <div id="historyView" class="p-4 hidden">
+            <div class="flex items-center justify-between mb-4 border-b border-zinc-900 pb-2">
+                <button onclick="switchView('owner')" class="text-zinc-400 text-sm hover:text-white">← Portal</button>
+                <h2 class="font-bold text-lg text-amber-500">Order History Log</h2>
+                <button onclick="clearOrderHistory()" class="text-rose-400 text-xs hover:underline">Clear History</button>
+            </div>
+            <div class="space-y-3" id="historyOrdersList"></div>
+        </div>
+
+        <!-- Analytics View -->
         <div id="analyticsView" class="p-4 hidden">
             <div class="flex items-center justify-between mb-4 border-b border-zinc-900 pb-2">
                 <button onclick="switchView('owner')" class="text-zinc-400 text-sm hover:text-white">← Portal</button>
-                <h2 class="font-bold text-lg text-amber-500">Revenue & Trends</h2>
-                <div class="w-10"></div>
+                <h2 class="font-bold text-lg text-amber-500">Analytics & Trends</h2>
+                <button onclick="resetAnalyticsData()" class="text-rose-400 text-xs hover:underline">Reset Data</button>
             </div>
             <div class="space-y-4">
                 <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-xl">
-                    <div class="flex justify-between items-center mb-2"><span class="text-xs font-bold text-zinc-300">📈 Daily Brief (Revenue by Hour)</span><span id="dailyRevTotal" class="text-xs text-emerald-400 font-bold">$845.00</span></div>
-                    <div class="h-28 flex items-end gap-1.5 pt-4 border-b border-zinc-800 pb-2 px-1" id="hourlyChartContainer"></div>
-                    <div class="flex justify-between text-[9px] text-zinc-500 mt-1"><span>12 PM</span><span>4 PM</span><span>8 PM</span><span>12 AM</span></div>
-                </div>
-                <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-xl">
-                    <div class="flex justify-between items-center mb-2"><span class="text-xs font-bold text-zinc-300">📊 Monthly Brief (Revenue by Day)</span><span id="monthlyRevTotal" class="text-xs text-emerald-400 font-bold">$7,420.00</span></div>
-                    <div class="h-24 flex items-end gap-1 pt-4 border-b border-zinc-800 pb-2 px-1 overflow-x-auto" id="dailyChartContainer"></div>
-                </div>
-                <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-xl">
-                    <div class="flex justify-between items-center mb-2"><span class="text-xs font-bold text-zinc-300">📅 Annual Brief (Monthly Revenue)</span><span id="yearlyRevTotal" class="text-xs text-emerald-400 font-bold">$54,300.00</span></div>
-                    <div class="h-24 flex items-end gap-2 pt-4 border-b border-zinc-800 pb-2 px-1" id="yearlyChartContainer"></div>
+                    <div class="flex justify-between items-center mb-2"><span class="text-xs font-bold text-zinc-300">📈 Revenue Analytics (From Live Orders)</span><span id="analyticsRevTotal" class="text-xs text-emerald-400 font-bold">$0.00</span></div>
+                    <div class="h-28 flex items-end gap-1.5 pt-4 border-b border-zinc-800 pb-2 px-1" id="analyticsChartContainer"></div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Modals -->
     <div id="locationModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-zinc-900 border border-zinc-800 w-full max-w-sm rounded-2xl p-5 space-y-4">
             <div class="flex justify-between items-center border-b border-zinc-800 pb-3"><h3 class="font-bold text-lg">Manage Locations</h3><button onclick="closeLocationManager()" class="text-zinc-400 hover:text-white text-sm">✕</button></div>
@@ -123,7 +137,7 @@
             <div class="pt-2 border-t border-zinc-800 space-y-2">
                 <input type="text" id="newLocName" placeholder="Location Name" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-2.5 text-xs text-zinc-200">
                 <input type="text" id="newLocAddress" placeholder="Street Address" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-2.5 text-xs text-zinc-200">
-                <button onclick="saveNewLocation()" class="w-full bg-pink-600 hover:bg-pink-500 text-white font-semibold py-2.5 rounded-xl text-xs transition">Add Location</button>
+                <button onclick="saveNewLocationFromModal()" class="w-full bg-pink-600 hover:bg-pink-500 text-white font-semibold py-2.5 rounded-xl text-xs transition">Add Location</button>
             </div>
         </div>
     </div>
@@ -148,75 +162,191 @@
         </div>
     </div>
 
+    <!-- Success Checkout Modal -->
+    <div id="successModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-zinc-900 border border-zinc-800 w-full max-w-sm rounded-2xl p-6 text-center space-y-4">
+            <div class="w-16 h-16 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-2xl">✓</div>
+            <h3 class="font-bold text-lg text-zinc-100">Order Placed Successfully!</h3>
+            <div class="bg-zinc-950 p-4 rounded-xl border border-zinc-800 space-y-1">
+                <div class="text-xs text-zinc-400">Assigned Ticket Number:</div>
+                <div id="successTicketNum" class="text-2xl font-mono font-bold text-pink-500">#000</div>
+                <div id="successCustomerName" class="text-xs text-zinc-300 font-medium pt-1"></div>
+            </div>
+            <button onclick="closeSuccessModal()" class="w-full bg-pink-600 hover:bg-pink-500 text-white font-semibold py-2.5 rounded-xl text-xs transition">View in Tracker</button>
+        </div>
+    </div>
+
     <script>
         const app = {
-            cart: [],
-            locations: [{ id: 1, name: "Downtown Lot", address: "742 S 7th St, Phoenix, AZ 85004" }, { id: 2, name: "Central Station Spot", address: "1500 N Central Ave, Phoenix, AZ 85004" }],
-            activeLocationId: 1,
-            orders: [
-                { id: "101", name: "Carlos", items: "2x Taco (Asada), 1x Agua Fresca (Horchata)", status: "Preparing", total: 11.00, timestamp: Date.now() - 360000, notes: "Extra spicy please" },
-                { id: "102", name: "Maria", items: "1x Burrito", status: "Ready", total: 12.00, timestamp: Date.now() - 900000, notes: "" }
+            cart: JSON.parse(localStorage.getItem('foodtruck_cart')) || [],
+            locations: JSON.parse(localStorage.getItem('foodtruck_locations')) || [
+                { id: 1, name: "Downtown Lot", address: "742 S 7th St, Phoenix, AZ 85004" }, 
+                { id: 2, name: "Central Station Spot", address: "1500 N Central Ave, Phoenix, AZ 85004" }
             ],
-            menu: [
-                { id: 1, category: "Tacos & Specialties", name: "Taco", price: 3.50, desc: "Meat, cilantro, onion (Asada, Pastor, Cabeza, Birria, Pollo).", prep: "2 mins" },
-                { id: 2, category: "Tacos & Specialties", name: "Vampiro", price: 4.50, desc: "Meat, cheese, cilantro and onion on crispy tortilla.", prep: "3 mins" },
-                { id: 3, category: "Tacos & Specialties", name: "Quesabirria w/ Consomé", price: 5.50, desc: "Meat, cheese, cilantro, onion and rich beef broth consomé.", prep: "4 mins" },
-                { id: 4, category: "Tacos & Specialties", name: "Quesacamaron w/ Broth", price: 6.00, desc: "Shrimp, cheese, pico de gallo and its broth.", prep: "4 mins" },
-                { id: 5, category: "Heavyweights & Plates", name: "Burrito", price: 12.00, desc: "Meat, rice, beans, cabbage, cilantro, onion, guacamole.", prep: "5 mins" },
-                { id: 6, category: "Heavyweights & Plates", name: "Torta w/ Fries", price: 15.50, desc: "Meat, mayo, beans, chipotle sauce, cabbage, cilantro, onion, tomato, avocado, queso fresco, jalapeños w/ fries.", prep: "6 mins" },
-                { id: 7, category: "Heavyweights & Plates", name: "Carne Asada Fries", price: 15.00, desc: "Fries, meat, cheese, chipotle sauce, sour cream, avocado sauce, topped with guacamole.", prep: "5 mins" },
-                { id: 8, category: "Heavyweights & Plates", name: "Birria Nachos", price: 14.00, desc: "Meat, tortilla chips, nacho cheese, pico, jalapeños.", prep: "5 mins" },
-                { id: 9, category: "Heavyweights & Plates", name: "1/2 & 1/2", price: 17.00, desc: "Half Carne Asada Fries & half Birria Nachos.", prep: "6 mins" },
-                { id: 10, category: "Refreshing Drinks", name: "Agua Fresca", price: 4.00, desc: "Limonada de Pepino, Jamaica, Horchata.", isDrink: true, options: ["Limonada de Pepino", "Jamaica", "Horchata"], prep: "1 min" },
-                { id: 11, category: "Refreshing Drinks", name: "Mexican Coke / Jarritos", price: 3.50, desc: "Authentic bottled cane sugar beverages.", prep: "1 min" }
+            activeLocationId: parseInt(localStorage.getItem('foodtruck_active_loc')) || 1,
+            isOpen: JSON.parse(localStorage.getItem('foodtruck_isopen')) ?? true,
+            orders: JSON.parse(localStorage.getItem('foodtruck_orders')) || [],
+            history: JSON.parse(localStorage.getItem('foodtruck_history')) || [],
+            menu: JSON.parse(localStorage.getItem('foodtruck_menu')) || [
+                { id: 1, category: "Tacos & Specialties", name: "Taco", price: 3.50, desc: "Meat, cilantro, onion (Asada, Pastor, Cabeza, Birria, Pollo).", prep: "2 mins", soldOut: false },
+                { id: 2, category: "Tacos & Specialties", name: "Vampiro", price: 4.50, desc: "Meat, cheese, cilantro and onion on crispy tortilla.", prep: "3 mins", soldOut: false },
+                { id: 3, category: "Tacos & Specialties", name: "Quesabirria w/ Consomé", price: 5.50, desc: "Meat, cheese, cilantro, onion and rich beef broth consomé.", prep: "4 mins", soldOut: false },
+                { id: 4, category: "Tacos & Specialties", name: "Quesacamaron w/ Broth", price: 6.00, desc: "Shrimp, cheese, pico de gallo and its broth.", prep: "4 mins", soldOut: false },
+                { id: 5, category: "Main Entrées & Plates", name: "Burrito", price: 12.00, desc: "Meat, rice, beans, cabbage, cilantro, onion, guacamole.", prep: "5 mins", soldOut: false },
+                { id: 6, category: "Main Entrées & Plates", name: "Torta w/ Fries", price: 15.50, desc: "Meat, mayo, beans, chipotle sauce, cabbage, cilantro, onion, tomato, avocado, queso fresco, jalapeños w/ fries.", prep: "6 mins", soldOut: false },
+                { id: 7, category: "Main Entrées & Plates", name: "Carne Asada Fries", price: 15.00, desc: "Fries, meat, cheese, chipotle sauce, sour cream, avocado sauce, topped with guacamole.", prep: "5 mins", soldOut: false },
+                { id: 8, category: "Main Entrées & Plates", name: "Birria Nachos", price: 14.00, desc: "Meat, tortilla chips, nacho cheese, pico, jalapeños.", prep: "5 mins", soldOut: false },
+                { id: 9, category: "Main Entrées & Plates", name: "1/2 & 1/2", price: 17.00, desc: "Half Carne Asada Fries & half Birria Nachos.", prep: "6 mins", soldOut: false },
+                { id: 10, category: "Refreshing Drinks", name: "Agua Fresca", price: 4.00, desc: "Limonada de Pepino, Jamaica, Horchata.", isDrink: true, options: ["Limonada de Pepino", "Jamaica", "Horchata"], prep: "1 min", soldOut: false },
+                { id: 11, category: "Refreshing Drinks", name: "Mexican Coke / Jarritos", price: 3.50, desc: "Authentic bottled cane sugar beverages.", prep: "1 min", soldOut: false }
             ]
         };
-        function initApp() { renderLocationDropdowns(); }
-        function renderLocationDropdowns() {
-            const select = document.getElementById('activeLocationSelect');
-            if (select) select.innerHTML = app.locations.map(l => `<option value="${l.id}" ${l.id === app.activeLocationId ? 'selected' : ''}>${l.name} — ${l.address}</option>`).join('');
+
+        function saveState() {
+            localStorage.setItem('foodtruck_cart', JSON.stringify(app.cart));
+            localStorage.setItem('foodtruck_locations', JSON.stringify(app.locations));
+            localStorage.setItem('foodtruck_active_loc', app.activeLocationId);
+            localStorage.setItem('foodtruck_isopen', JSON.stringify(app.isOpen));
+            localStorage.setItem('foodtruck_orders', JSON.stringify(app.orders));
+            localStorage.setItem('foodtruck_history', JSON.stringify(app.history));
+            localStorage.setItem('foodtruck_menu', JSON.stringify(app.menu));
         }
-        function changeActiveLocation(id) { app.activeLocationId = parseInt(id); }
-        function openLocationManager() { renderLocationManagerList(); document.getElementById('locationModal').style.display = 'flex'; }
-        function closeLocationManager() { document.getElementById('locationModal').style.display = 'none'; }
+
+        function initApp() { 
+            updateLandingUI();
+            updateCartBadges();
+            renderPopularHighlights();
+        }
+
+        function updateLandingUI() {
+            const loc = app.locations.find(l => l.id === app.activeLocationId) || app.locations[0];
+            const locDisplay = document.getElementById('activeLocationDisplay');
+            if (locDisplay && loc) {
+                locDisplay.innerHTML = `<strong>${loc.name}</strong> — ${loc.address}`;
+            }
+
+            const statusBadge = document.getElementById('storeStatusBadge');
+            const statusText = document.getElementById('storeStatusText');
+            if (statusBadge && statusText) {
+                if (app.isOpen) {
+                    statusBadge.className = "bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-4 py-2 text-xs mb-6 text-emerald-400 flex items-center gap-2 w-full justify-center";
+                    statusText.innerText = "Open Now • Serving Until 10 PM";
+                } else {
+                    statusBadge.className = "bg-rose-500/10 border border-rose-500/30 rounded-xl px-4 py-2 text-xs mb-6 text-rose-400 flex items-center gap-2 w-full justify-center";
+                    statusText.innerText = "Closed Right Now";
+                }
+            }
+        }
+
+        function toggleStoreStatus() {
+            app.isOpen = !app.isOpen;
+            saveState();
+            updateLandingUI();
+            renderOwnerPortal();
+        }
+
+        function openLocationManager() { 
+            renderLocationManagerList(); 
+            document.getElementById('locationModal').style.display = 'flex'; 
+        }
+
+        function closeLocationManager() { 
+            document.getElementById('locationModal').style.display = 'none'; 
+        }
+
         function renderLocationManagerList() {
             const container = document.getElementById('modalLocationList');
             const ownerContainer = document.getElementById('ownerLocationList');
             const html = app.locations.map(l => `
                 <div class="bg-zinc-950 p-2.5 rounded-lg border border-zinc-800 flex justify-between items-center text-xs">
-                    <div><div class="font-bold text-zinc-200">${l.name}</div><div class="text-zinc-500 text-[10px]">${l.address}</div></div>
+                    <div>
+                        <div class="font-bold text-zinc-200">${l.name} <input type="radio" name="activeLocRadio" ${l.id === app.activeLocationId ? 'checked' : ''} onchange="setActiveLocation(${l.id})" class="ml-2"> Active</div>
+                        <div class="text-zinc-500 text-[10px]">${l.address}</div>
+                    </div>
                     ${app.locations.length > 1 ? `<button onclick="deleteLocation(${l.id})" class="text-rose-400 hover:underline">Delete</button>` : ''}
                 </div>
             `).join('');
             if (container) container.innerHTML = html;
             if (ownerContainer) ownerContainer.innerHTML = html;
         }
-        function saveNewLocation() {
+
+        function setActiveLocation(id) {
+            app.activeLocationId = id;
+            saveState();
+            updateLandingUI();
+            renderLocationManagerList();
+        }
+
+        function saveNewLocationFromModal() {
             const name = document.getElementById('newLocName').value.trim();
             const address = document.getElementById('newLocAddress').value.trim();
             if (!name || !address) { alert("Fill out both fields"); return; }
-            app.locations.push({ id: Date.now(), name, address });
+            const newId = Date.now();
+            app.locations.push({ id: newId, name, address });
             document.getElementById('newLocName').value = '';
             document.getElementById('newLocAddress').value = '';
-            renderLocationDropdowns(); renderLocationManagerList();
+            saveState();
+            updateLandingUI(); 
+            renderLocationManagerList();
         }
-        function deleteLocation(id) { app.locations = app.locations.filter(l => l.id !== id); renderLocationDropdowns(); renderLocationManagerList(); }
+
+        function deleteLocation(id) { 
+            app.locations = app.locations.filter(l => l.id !== id); 
+            if(app.activeLocationId === id && app.locations.length > 0) {
+                app.activeLocationId = app.locations[0].id;
+            }
+            saveState();
+            updateLandingUI(); 
+            renderLocationManagerList(); 
+        }
+
         function promptOwnerLogin() {
             const pin = prompt("Enter Owner Access PIN (Hint: 1234):");
             if (pin === "1234") switchView('owner');
             else if (pin !== null) alert("Incorrect PIN");
         }
+
         function switchView(view) {
-            ['landingView', 'menuView', 'trackerView', 'ownerView', 'analyticsView'].forEach(v => {
+            ['landingView', 'menuView', 'trackerView', 'ownerView', 'analyticsView', 'historyView'].forEach(v => {
                 const el = document.getElementById(v);
                 if (el) el.style.display = 'none';
             });
             if (view === 'landing') document.getElementById('landingView').style.display = 'flex';
             if (view === 'menu') { document.getElementById('menuView').style.display = 'block'; renderMenu(); }
             if (view === 'tracker') { document.getElementById('trackerView').style.display = 'block'; renderTracker(); }
-            if (view === 'owner') { document.getElementById('ownerView').style.display = 'block'; renderOwnerPortal(); renderLocationManagerList(); }
-            if (view === 'analytics') { document.getElementById('analyticsView').style.display = 'block'; renderAnalyticsCharts(); }
+            if (view === 'owner') { 
+                document.getElementById('ownerView').style.display = 'block'; 
+                renderOwnerPortal(); 
+                renderLocationManagerList(); 
+                document.getElementById('ownerStatusLabel').innerText = app.isOpen ? "Open" : "Closed";
+                document.getElementById('ownerStatusLabel').className = app.isOpen ? "text-emerald-400" : "text-rose-400";
+            }
+            if (view === 'analytics') { document.getElementById('analyticsView').style.display = 'block'; renderAnalytics(); }
+            if (view === 'history') { document.getElementById('historyView').style.display = 'block'; renderHistory(); }
         }
+
+        function renderPopularHighlights() {
+            const container = document.getElementById('popularHighlightsContainer');
+            if (!container) return;
+            // Calculate popular items based on orders & history counts
+            const counts = {};
+            [...app.orders, ...app.history].forEach(o => {
+                o.cartSnapshot?.forEach(item => {
+                    counts[item.name] = (counts[item.name] || 0) + item.quantity;
+                });
+            });
+            const sorted = Object.entries(counts).sort((a,b) => b[1] - a[1]);
+            const top3 = sorted.slice(0, 3).map(x => x[0]);
+            const defaults = ["Quesabirria w/ Consomé", "Carne Asada Fries", "Taco"];
+            const highlights = [top3[0] || defaults[0], top3[1] || defaults[1], top3[2] || defaults[2]];
+            
+            container.innerHTML = highlights.map((name, idx) => {
+                const labels = ["TOP ITEM", "RUNNER UP", "POPULAR"];
+                const itemObj = app.menu.find(m => m.name.toLowerCase() === name.toLowerCase()) || app.menu[0];
+                return `<div onclick="handleItemClick(${itemObj.id})" class="bg-zinc-950/60 p-2 rounded-lg border border-zinc-800 cursor-pointer hover:border-pink-500 transition"><span class="text-[9px] text-zinc-400 block font-semibold">${labels[idx]}</span><span class="font-bold text-zinc-200 text-[11px] truncate block">${itemObj.name}</span></div>`;
+            }).join('');
+        }
+
         function renderMenu() {
             const container = document.getElementById('menuContainer');
             if (!container) return;
@@ -226,114 +356,287 @@
                     <h3 class="font-bold text-amber-500 mb-3 text-sm">🔥 ${cat}</h3>
                     <div class="space-y-3">
                         ${app.menu.filter(i => i.category === cat).map(item => `
-                            <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-xl flex justify-between items-center">
+                            <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-xl flex justify-between items-center ${item.soldOut ? 'opacity-50' : ''}">
                                 <div>
-                                    <h4 class="font-bold text-sm">${item.name}</h4>
+                                    <h4 class="font-bold text-sm flex items-center gap-2">${item.name}${item.soldOut ? '<span class="text-[10px] bg-rose-500/20 text-rose-400 px-1.5 py-0.5 rounded font-mono">SOLD OUT</span>' : ''}</h4>
                                     <p class="text-xs text-zinc-400 mt-0.5">${item.desc}</p>                                     <div class="flex items-center gap-3 mt-2"><span class="text-sm font-semibold text-pink-500">$${item.price.toFixed(2)}</span><span class="text-[10px] text-zinc-500">(~${item.prep})</span></div>
                                 </div>
-                                <button onclick="handleItemClick(${item.id})" class="bg-pink-600 hover:bg-pink-500 text-white px-3 py-1.5 rounded-lg text-xs font-semibold">Add +</button>
+                                <button ${item.soldOut ? 'disabled' : ''} onclick="handleItemClick(${item.id})" class="bg-pink-600 hover:bg-pink-500 disabled:bg-zinc-800 text-white px-3 py-1.5 rounded-lg text-xs font-semibold h-8 min-w-[55px] flex items-center justify-center">Add +</button>
                             </div>
                         `).join('')}
                     </div>
                 </div>
             `).join('');
             updateCartBadges();
+            renderPopularHighlights();
         }
+
         let selectedDrinkItem = null;
         function handleItemClick(id) {
             const item = app.menu.find(m => m.id === id);
+            if (item.soldOut) return;
             if (item.isDrink) {
                 selectedDrinkItem = item;
                 document.getElementById('drinkModalTitle').innerText = `Customize ${item.name}`;
                 document.getElementById('drinkFlavorSelect').innerHTML = item.options.map(opt => `<option value="${opt}">${opt}</option>`).join('');
                 document.getElementById('drinkModal').style.display = 'flex';
             } else {
-                const existing = app.cart.find(c => c.id === id && !c.notes);
+                const uniqueName = item.name;
+                const existing = app.cart.find(c => c.name === uniqueName);
                 if (existing) existing.quantity++;
-                else app.cart.push({ ...item, quantity: 1 });
+                else app.cart.push({ id: item.id, name: item.name, price: item.price, quantity: 1 });
+                saveState();
                 updateCartBadges();
             }
         }
+
         function closeDrinkModal() { document.getElementById('drinkModal').style.display = 'none'; }
+        
         function addCustomDrinkToCart() {
             const flavor = document.getElementById('drinkFlavorSelect').value;
-            app.cart.push({ ...selectedDrinkItem, name: `${selectedDrinkItem.name} (${flavor})`, quantity: 1 });
-            closeDrinkModal(); updateCartBadges();
+            const customName = `${selectedDrinkItem.name} (${flavor})`;
+            const existing = app.cart.find(c => c.name === customName);
+            if (existing) {
+                existing.quantity++;
+            } else {
+                app.cart.push({ id: selectedDrinkItem.id, name: customName, price: selectedDrinkItem.price, quantity: 1 });
+            }
+            saveState();
+            closeDrinkModal(); 
+            updateCartBadges();
         }
+
         function updateCartBadges() {
             const count = app.cart.reduce((sum, item) => sum + item.quantity, 0);
             const total = app.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            document.getElementById('cartCountBadge').innerText = `${count} items`;
-            document.getElementById('cartTotalBadge').innerText = `$${total.toFixed(2)}`;
+            const countBadge = document.getElementById('cartCountBadge');
+            const totalBadge = document.getElementById('cartTotalBadge');
+            if (countBadge) countBadge.innerText = `${count} items`;
+            if (totalBadge) totalBadge.innerText = `$${total.toFixed(2)}`;
         }
+
         function openCartModal() {
             if (app.cart.length === 0) { alert("Cart is empty!"); return; }
-            document.getElementById('cartItemsList').innerHTML = app.cart.map((item, idx) => `
-                <div class="flex justify-between items-center bg-zinc-950 p-3 rounded-xl border border-zinc-800 text-sm">
-                    <div class="font-bold">${item.quantity}x ${item.name}</div>
-                    <div class="flex items-center gap-3"><span class="text-pink-500 font-semibold">$${(item.price * item.quantity).toFixed(2)}</span><button onclick="removeFromCart(${idx})" class="text-zinc-500 hover:text-rose-400 text-xs">✕</button></div>
-                </div>
-            `).join('');
+            renderCartItems();
             document.getElementById('cartModal').style.display = 'flex';
         }
+
+        function renderCartItems() {
+            document.getElementById('cartItemsList').innerHTML = app.cart.map((item, idx) => `
+                <div class="flex justify-between items-center bg-zinc-950 p-3 rounded-xl border border-zinc-800 text-sm">
+                    <div>
+                        <div class="font-bold">${item.name}</div>
+                        <div class="text-xs text-pink-500 font-semibold">$${(item.price * item.quantity).toFixed(2)}</div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="adjustCartQuantity(${idx}, -1)" class="w-6 h-6 bg-zinc-800 hover:bg-zinc-700 rounded text-xs font-bold flex items-center justify-center">-</button>
+                        <span class="text-xs font-mono w-4 text-center">${item.quantity}</span>
+                        <button onclick="adjustCartQuantity(${idx}, 1)" class="w-6 h-6 bg-zinc-800 hover:bg-zinc-700 rounded text-xs font-bold flex items-center justify-center">+</button>
+                        <button onclick="removeFromCart(${idx})" class="ml-2 text-zinc-500 hover:text-rose-400 text-xs">✕</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function adjustCartQuantity(index, delta) {
+            app.cart[index].quantity += delta;
+            if (app.cart[index].quantity <= 0) {
+                app.cart.splice(index, 1);
+            }
+            saveState();
+            updateCartBadges();
+            if (app.cart.length === 0) closeCartModal();
+            else renderCartItems();
+        }
+
         function closeCartModal() { document.getElementById('cartModal').style.display = 'none'; }
-        function removeFromCart(index) { app.cart.splice(index, 1); updateCartBadges(); if (app.cart.length === 0) closeCartModal(); else openCartModal(); }
+        
+        function removeFromCart(index) { 
+            app.cart.splice(index, 1); 
+            saveState();
+            updateCartBadges(); 
+            if (app.cart.length === 0) closeCartModal(); 
+            else renderCartItems(); 
+        }
+
+        let lastSubmittedTicket = null;
         function submitOrder() {
+            if (app.cart.length === 0) { alert("Cart is empty!"); return; }
             const name = document.getElementById('customerName').value.trim() || "Guest";
             const notes = document.getElementById('customerOrderNotes').value.trim();
             const summary = app.cart.map(i => `${i.quantity}x ${i.name}`).join(', ');
             const total = app.cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
-            app.orders.unshift({ id: Date.now().toString().slice(-3), name, items: summary, status: "Preparing", total, timestamp: Date.now(), notes });
-            app.cart = []; closeCartModal(); updateCartBadges(); switchView("tracker");
+            
+            const newOrder = {
+                id: Date.now().toString().slice(-3),
+                name,
+                items: summary,
+                status: "Preparing",
+                total,
+                timestamp: Date.now(),
+                notes,
+                cartSnapshot: [...app.cart]
+            };
+
+            app.orders.unshift(newOrder);
+            lastSubmittedTicket = newOrder;
+            app.cart = []; 
+            saveState();
+            closeCartModal(); 
+            updateCartBadges(); 
+
+            // Show success checkout modal
+            document.getElementById('successTicketNum').innerText = `#${newOrder.id}`;
+            document.getElementById('successCustomerName').innerText = `Name: ${newOrder.name}`;
+            document.getElementById('successModal').style.display = 'flex';
         }
+
+        function closeSuccessModal() {
+            document.getElementById('successModal').style.display = 'none';
+            switchView('tracker');
+        }
+
         function renderTracker() {
-            document.getElementById('activeOrdersList').innerHTML = app.orders.map(o => {
+            const container = document.getElementById('activeOrdersList');
+            if(!container) return;
+            if (app.orders.length === 0) {
+                container.innerHTML = `<div class="text-center text-zinc-500 py-8 text-xs">No active orders right now.</div>`;
+                return;
+            }
+            container.innerHTML = app.orders.map(o => {
                 const waitMins = Math.floor((Date.now() - o.timestamp) / 60000);
                 return `
                     <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-xl flex justify-between items-center">
                         <div>
-                            <span class="text-xs text-pink-500 font-mono">Order #${o.id} • ${o.name} (Wait: ${waitMins}m)</span>
-                            <h4 class="font-bold text-sm mt-0.5">${o.items}</h4>
-                            ${o.notes ? `<p class="text-xs text-amber-400 mt-1">Note: ${o.notes}</p>` : ''}
+                            <span class="text-xs text-pink-500 font-mono font-bold">Ticket #${o.id} • ${o.name}</span>
+                            <div class="text-[11px] text-zinc-400 mt-0.5">Wait time: ~${waitMins}m</div>
                             <span class="inline-block mt-2 px-2.5 py-1 rounded-full text-xs font-medium ${o.status === 'Preparing' ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'}">${o.status}</span>
                         </div>
                     </div>
                 `;
             }).join('');
         }
+
         function renderOwnerPortal() {
-            document.getElementById('ownerOrdersList').innerHTML = app.orders.map(o => {
+            const container = document.getElementById('ownerOrdersList');
+            if(!container) return;
+            if (app.orders.length === 0) {
+                container.innerHTML = `<div class="text-center text-zinc-500 py-6 text-xs">No incoming orders.</div>`;
+                return;
+            }
+            container.innerHTML = app.orders.map(o => {
                 const waitMins = Math.floor((Date.now() - o.timestamp) / 60000);
                 return `
                     <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-xl flex flex-col gap-3">
                         <div class="flex justify-between items-start">
-                            <div><span class="text-xs text-amber-500 font-mono">Order #${o.id} (${o.name}) • Active: ${waitMins}m</span><h4 class="font-bold text-sm mt-0.5">${o.items}</h4>${o.notes ? `<p class="text-xs text-amber-400 mt-1">Note: ${o.notes}</p>` : ''}</div>
+                            <div>
+                                <span class="text-xs text-amber-500 font-mono font-bold">#${o.id} (${o.name}) • Active: ${waitMins}m</span>
+                                <h4 class="font-bold text-sm mt-1">${o.items}</h4>
+                                ${o.notes ? `<p class="text-xs text-amber-400 mt-1">Note: ${o.notes}</p>` : ''}
+                            </div>
                             <span class="font-bold text-emerald-400">$${o.total.toFixed(2)}</span>
                         </div>
-                        <div class="flex gap-2">
-                            <button onclick="updateOrderStatus('${o.id}', 'Preparing')" class="flex-1 bg-zinc-800 hover:bg-zinc-700 py-1.5 rounded-lg text-xs font-medium">Prep</button>
-                            <button onclick="updateOrderStatus('${o.id}', 'Ready')" class="flex-1 bg-amber-600 hover:bg-amber-500 py-1.5 rounded-lg text-xs font-medium">Ready</button>
-                            <button onclick="fulfillOrder('${o.id}')" class="flex-1 bg-emerald-600 hover:bg-emerald-500 py-1.5 rounded-lg text-xs font-medium">Fulfill</button>
+                        <div class="flex gap-2 pt-2 border-t border-zinc-800/80">
+                            <button onclick="updateOrderStatus('${o.id}', '${o.status === 'Preparing' ? 'Ready' : 'Preparing النبات'}')" class="flex-1 bg-amber-600 hover:bg-amber-500 py-1.5 rounded-lg text-xs font-medium">${o.status === 'Preparing' ? 'Mark Ready' : 'Set Preparing'}</button>
+                            <button onclick="completeOrder('${o.id}')" class="flex-1 bg-emerald-600 hover:bg-emerald-500 py-1.5 rounded-lg text-xs font-medium">Complete Order ✓</button>
                             <button onclick="cancelOrder('${o.id}')" class="bg-rose-950 text-rose-400 border border-rose-500/30 px-3 py-1.5 rounded-lg text-xs font-medium">Cancel</button>
                         </div>
                     </div>
                 `;
             }).join('');
         }
-        function updateOrderStatus(id, newStatus) { const o = app.orders.find(x => x.id === id); if (o) { o.status = newStatus; renderOwnerPortal(); } }
-        function fulfillOrder(id) { app.orders = app.orders.filter(x => x.id !== id); renderOwnerPortal(); }
-        function cancelOrder(id) { if (confirm("Cancel order?")) { app.orders = app.orders.filter(x => x.id !== id); renderOwnerPortal(); } }
-        function renderAnalyticsCharts() {
-            const hourlyData = [15, 30, 45, 80, 120, 190, 140, 90, 40];
-            const dailyData = [120, 150, 90, 110, 200, 240, 220, 180, 160, 190, 210, 250, 280, 310, 290, 270, 240, 230, 260, 300, 340, 320, 290, 280, 310, 350, 380, 360, 390, 420];
-            const yearlyData = [3200, 3400, 3900, 4100, 4800, 5200, 5600, 5100, 4700, 4900, 5300, 6100];
-            document.getElementById('dailyRevTotal').innerText = '$845.00';
-            document.getElementById('monthlyRevTotal').innerText = '$7,420.00';
-            document.getElementById('yearlyRevTotal').innerText = '$54,300.00';
-            document.getElementById('hourlyChartContainer').innerHTML = hourlyData.map(val => `<div class="flex-1 bg-pink-600/30 hover:bg-pink-500 rounded-t transition relative group" style="height: ${(val / 190) * 100}%"><span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] bg-zinc-900 border border-zinc-800 px-1 rounded opacity-0 group-hover:opacity-100">$${val}</span></div>`).join('');
-            document.getElementById('dailyChartContainer').innerHTML = dailyData.map(val => `<div class="w-2.5 bg-emerald-500/40 hover:bg-emerald-400 rounded-t transition" style="height: ${(val / 420) * 100}%" title="$${val}"></div>`).join('');
-            document.getElementById('yearlyChartContainer').innerHTML = yearlyData.map(val => `<div class="flex-1 bg-amber-500/40 hover:bg-amber-400 rounded-t transition relative group" style="height: ${(val / 6100) * 100}%"><span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] bg-zinc-900 border border-zinc-800 px-1 rounded opacity-0 group-hover:opacity-100">$${val}</span></div>`).join('');
+
+        function updateOrderStatus(id, newStatus) { 
+            const cleanStatus = newStatus.includes('Ready') ? 'Ready' : 'Preparing';
+            const o = app.orders.find(x => x.id === id); 
+            if (o) { 
+                o.status = cleanStatus; 
+                saveState();
+                renderOwnerPortal(); 
+            } 
         }
+
+        function completeOrder(id) { 
+            const idx = app.orders.findIndex(x => x.id === id);
+            if (idx > -1) {
+                const completed = app.orders.splice(idx, 1)[0];
+                completed.status = "Completed";
+                app.history.unshift(completed);
+                saveState();
+                renderOwnerPortal();
+            }
+        }
+
+        function cancelOrder(id) { 
+            if (confirm("Cancel order?")) { 
+                const idx = app.orders.findIndex(x => x.id === id);
+                if (idx > -1) {
+                    const canceled = app.orders.splice(idx, 1)[0];
+                    canceled.status = "Canceled";
+                    app.history.unshift(canceled);
+                    saveState();
+                    renderOwnerPortal();
+                }
+            } 
+        }
+
+        function renderHistory() {
+            const container = document.getElementById('historyOrdersList');
+            if (!container) return;
+            if (app.history.length === 0) {
+                container.innerHTML = `<div class="text-center text-zinc-500 py-8 text-xs">No order history recorded yet.</div>`;
+                return;
+            }
+            container.innerHTML = app.history.map(h => `
+                <div class="bg-zinc-900 border border-zinc-800 p-3 rounded-xl flex justify-between items-center text-xs">
+                    <div>
+                        <span class="font-mono font-bold text-amber-500">#${h.id} (${h.name})</span>
+                        <div class="text-zinc-300 mt-0.5">${h.items}</div>
+                        <div class="text-[10px] text-zinc-500 mt-1">$${h.total.toFixed(2)} • ${h.status}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function clearOrderHistory() {
+            if (confirm("Clear all order history logs?")) {
+                app.history = [];
+                saveState();
+                renderHistory();
+            }
+        }
+
+        function resetAnalyticsData() {
+            if (confirm("Reset analytics data?")) {
+                app.history = [];
+                app.orders = [];
+                saveState();
+                renderAnalytics();
+            }
+        }
+
+        function renderAnalytics() {
+            const container = document.getElementById('analyticsChartContainer');
+            const totalLabel = document.getElementById('analyticsRevTotal');
+            if (!container) return;
+            
+            const totalRev = app.history.filter(h => h.status === 'Completed').reduce((sum, h) => sum + h.total, 0);
+            totalLabel.innerText = `$${totalRev.toFixed(2)}`;
+
+            if (app.history.length === 0) {
+                container.innerHTML = `<div class="w-full text-center text-zinc-500 text-xs py-10">No completed order data to display yet.</div>`;
+                return;
+            }
+
+            const recent = app.history.filter(h => h.status === 'Completed').slice(0, 10).reverse();
+            const maxVal = Math.max(...recent.map(r => r.total), 10);
+            container.innerHTML = recent.map(r => `
+                <div class="flex-1 bg-emerald-500/40 hover:bg-emerald-400 rounded-t transition relative group" style="height: ${(r.total / maxVal) * 100}%">
+                    <span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] bg-zinc-900 border border-zinc-800 px-1 rounded opacity-0 group-hover:opacity-100">$${r.total}</span>
+                </div>
+            `).join('');
+        }
+
         window.onload = initApp;
     </script>
 </body>
