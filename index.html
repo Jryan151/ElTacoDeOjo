@@ -127,6 +127,15 @@
                 <select id="itemMeatSelect" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-sm text-zinc-200"></select>
             </div>
 
+            <!-- New Tortilla Substitution Section -->
+            <div id="itemModalTortillaSection" class="hidden">
+                <label class="block text-xs text-zinc-400 mb-1 font-medium">Tortilla Option</label>
+                <select id="itemTortillaSelect" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-sm text-zinc-200">
+                    <option value="">Standard (Corn)</option>
+                    <option value="Tortilla de Harina">Tortilla de Harina (+$1.00)</option>
+                </select>
+            </div>
+
             <div id="itemModalDrinkSection" class="hidden">
                 <label class="block text-xs text-zinc-400 mb-1 font-medium">Select Flavor Option</label>
                 <select id="itemDrinkSelect" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-sm text-zinc-200"></select>
@@ -200,16 +209,17 @@
             set orders(val) { localStorage.setItem('foodtruck_orders', JSON.stringify(val)); },
             get extraWait() { return localStorage.getItem('foodtruck_extrawait') || ''; },
             get menu() { return JSON.parse(localStorage.getItem('foodtruck_menu')) || [
-                { id: 1, category: "Tacos & Specialties", name: "Taco", price: 3.00, markdownPrice: null, desc: "Substitute: Tortilla de Harina ($1)", prep: "2 mins", soldOut: false, hasMeat: true, meats: "Asada, Pastor, Cabeza, Birria, Pollo, Camaron", camaronUpcharge: 0.50 },
-                { id: 2, category: "Tacos & Specialties", name: "Vampiro", price: 5.00, markdownPrice: null, desc: "", prep: "3 mins", soldOut: false, hasMeat: true, meats: "Asada, Pastor, Cabeza, Birria, Pollo, Camaron", camaronUpcharge: 0.50 },
-                { id: 3, category: "Tacos & Specialties", name: "Quesabirria Consome", price: 5.50, markdownPrice: null, desc: "Substitute: Tortilla de Harina ($1)", prep: "3 mins", soldOut: false, hasMeat: true, meats: "Birria", camaronUpcharge: null },
-                { id: 4, category: "Tacos & Specialties", name: "Quesacamaron Consome", price: 6.00, markdownPrice: null, desc: "Substitute: Tortilla de Harina ($1)", prep: "4 mins", soldOut: false, hasMeat: true, meats: "Camaron", camaronUpcharge: null },
-                { id: 5, category: "Main Entrées", name: "Burrito", price: 12.00, markdownPrice: null, desc: "", prep: "5 mins", soldOut: false, hasMeat: true, meats: "Asada, Pastor, Cabeza, Birria, Pollo, Camaron", camaronUpcharge: 0.50 },
-                { id: 6, category: "Main Entrées", name: "Quesadilla", price: 12.00, markdownPrice: null, desc: "Plain option available for $6", prep: "5 mins", soldOut: false, hasMeat: true, meats: "Asada, Pastor, Cabeza, Birria, Pollo, Camaron", camaronUpcharge: 0.50 },
-                { id: 7, category: "Main Entrées", name: "Torta W/ Fries", price: 15.00, markdownPrice: null, desc: "", prep: "8 mins", soldOut: false, hasMeat: true, meats: "Asada, Pastor, Cabeza, Birria, Pollo, Camaron", camaronUpcharge: 0.50 },
-                { id: 8, category: "Main Entrées", name: "Carne Asada Fries", price: 15.00, markdownPrice: null, desc: "", prep: "6 mins", soldOut: false, hasMeat: true, meats: "Asada", camaronUpcharge: null },
-                { id: 9, category: "Main Entrées", name: "Birria Nachos", price: 14.00, markdownPrice: null, desc: "", prep: "5 mins", soldOut: false, hasMeat: true, meats: "Birria", camaronUpcharge: null },
-                { id: 10, category: "Main Entrées", name: "1/2 Asada Fries & 1/2 Birria Nachos", price: 17.00, markdownPrice: null, desc: "", prep: "7 mins", soldOut: false, hasMeat: true, meats: "Asada & Birria", camaronUpcharge: null },
+                { id: 1, category: "Tacos & Specialties", name: "Taco", price: 3.00, markdownPrice: null, desc: "meat, cilantro, onion", prep: "2 mins", soldOut: false, hasMeat: true, meats: "Asada, Pastor, Cabeza, Birria, Pollo, Camaron", camaronUpcharge: 0.50, hasFlourTortillaOption: true },
+                { id: 2, category: "Tacos & Specialties", name: "Vampiro", price: 5.00, markdownPrice: null, desc: "meat, cheese, cilantro and onion", prep: "3 mins", soldOut: false, hasMeat: true, meats: "Asada, Pastor, Cabeza, Birria, Pollo, Camaron", camaronUpcharge: -0.50 },
+                { id: 3, category: "Tacos & Specialties", name: "Quesabirria Consome", price: 5.50, markdownPrice: null, desc: "meat, cheese, cilantro, onion and its broth", prep: "3 mins", soldOut: false, hasMeat: true, meats: "Birria", camaronUpcharge: null, hasFlourTortillaOption: true },
+                { id: 4, category: "Tacos & Specialties", name: "Quesacamaron Consome", price: 6.00, markdownPrice: null, desc: "shrimp, cheese, pico de gallo and it's broth", prep: "4 mins", soldOut: false, hasMeat: true, meats: "Camaron", camaronUpcharge: null, hasFlourTortillaOption: true },
+                { id: 5, category: "Main Entrées", name: "Burrito", price: 12.00, markdownPrice: null, desc: "meat, rice, beans, cabbage, cilantro, onion, guacamole", prep: "5 mins", soldOut: false, hasMeat: true, meats: "Asada, Pastor, Cabeza, Birria, Pollo, Camaron", camaronUpcharge: 0.50 },
+                { id: 6, category: "Main Entrées", name: "Quesadilla", price: 12.00, markdownPrice: null, desc: "meat, cheese *side of pico de gallo & sour cream", prep: "5 mins", soldOut: false, hasMeat: true, meats: "Asada, Pastor, Cabeza, Birria, Pollo, Camaron", camaronUpcharge: 0.50 },
+                { id: 15, category: "Main Entrées", name: "Plain Quesadilla", price: 6.00, markdownPrice: null, desc: "tortilla, cheese", prep: "3 mins", soldOut: false, hasMeat: false },
+                { id: 7, category: "Main Entrées", name: "Torta W/ Fries", price: 15.00, markdownPrice: null, desc: "meat, mayo, beans, chipotle sauce, cabbage, cilantro, onion, tomato, avocado, queso fresco, jalapeños w/ fries", prep: "8 mins", soldOut: false, hasMeat: true, meats: "Asada, Pastor, Cabeza, Birria, Pollo, Camaron", camaronUpcharge: 0.50 },
+                { id: 8, category: "Main Entrées", name: "Carne Asada Fries", price: 15.00, markdownPrice: null, desc: "fries, meat, cheese, chipotle sauce, sour cream, avocado sauce, topped with guacamole", prep: "6 mins", soldOut: false, hasMeat: true, meats: "Asada", camaronUpcharge: null },
+                { id: 9, category: "Main Entrées", name: "Birria Nachos", price: 14.00, markdownPrice: null, desc: "meat, tortilla chips, nacho cheese, pico, jalapeños", prep: "5 mins", soldOut: false, hasMeat: true, meats: "Birria", camaronUpcharge: null },
+                { id: 10, category: "Main Entrées", name: "1/2 Asada Fries & 1/2 Birria Nachos", price: 17.00, markdownPrice: null, desc: "half Carne Asada Fries & half Birria Nachos", prep: "7 mins", soldOut: false, hasMeat: true, meats: "Asada & Birria", camaronUpcharge: null },
                 { id: 11, category: "Beverages", name: "Aguas Frescas (32 oz)", price: 5.00, markdownPrice: null, desc: "Jamaica, Horchata, Limonada de Pepino", isDrink: true, options: ["Jamaica", "Horchata", "Limonada de Pepino"], prep: "1 min", soldOut: false },
                 { id: 12, category: "Beverages", name: "Mexican Cokes", price: 5.00, markdownPrice: null, desc: "", isDrink: true, options: ["Mexican Coke"], prep: "1 min", soldOut: false },
                 { id: 13, category: "Beverages", name: "Jarritos", price: 3.50, markdownPrice: null, desc: "", isDrink: true, options: ["Mandarin", "Tamarind", "Pineapple", "Fruit Punch"], prep: "1 min", soldOut: false },
@@ -335,6 +345,7 @@
             document.getElementById('itemModalTitle').innerText = `Add ${item.name}`;
 
             const meatSec = document.getElementById('itemModalMeatSection');
+            const tortillaSec = document.getElementById('itemModalTortillaSection');
             const drinkSec = document.getElementById('itemModalDrinkSection');
 
             // Dynamically build meat dropdown
@@ -342,11 +353,23 @@
                 meatSec.classList.remove('hidden');
                 const meatOptions = item.meats.split(',').map(m => m.trim());
                 document.getElementById('itemMeatSelect').innerHTML = meatOptions.map(m => {
-                    const isUpcharge = (m.toLowerCase() === 'camaron' && item.camaronUpcharge) ? ` (+$${item.camaronUpcharge.toFixed(2)})` : '';
+                    let isUpcharge = '';
+                    if (m.toLowerCase() === 'camaron' && item.camaronUpcharge !== null && item.camaronUpcharge !== undefined) {
+                        if (item.camaronUpcharge > 0) isUpcharge = ` (+$${item.camaronUpcharge.toFixed(2)})`;
+                        else if (item.camaronUpcharge < 0) isUpcharge = ` (-$${Math.abs(item.camaronUpcharge).toFixed(2)})`;
+                    }
                     return `<option value="${m}">${m}${isUpcharge}</option>`;
                 }).join('');
             } else {
                 meatSec.classList.add('hidden');
+            }
+
+            // Show tortilla option if applicable
+            if (item.hasFlourTortillaOption) {
+                tortillaSec.classList.remove('hidden');
+                document.getElementById('itemTortillaSelect').value = '';
+            } else {
+                tortillaSec.classList.add('hidden');
             }
 
             // Build drink dropdown
@@ -382,6 +405,14 @@
                 extraDetails.push(meat);
                 if (meat.toLowerCase() === 'camaron' && currentModalItem.camaronUpcharge) {
                     itemUpcharge += currentModalItem.camaronUpcharge;
+                }
+            }
+
+            if (currentModalItem.hasFlourTortillaOption) {
+                const tortilla = document.getElementById('itemTortillaSelect').value;
+                if (tortilla === 'Tortilla de Harina') {
+                    extraDetails.push('Tortilla de Harina');
+                    itemUpcharge += 1.00;
                 }
             }
 
