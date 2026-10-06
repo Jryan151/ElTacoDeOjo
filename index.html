@@ -25,7 +25,11 @@
 
             <div id="storeStatusBadge" class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-4 py-2 text-xs mb-6 text-emerald-400 flex items-center gap-2 w-full justify-center">
                 <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span id="storeStatusText">Open Now • Serving Until 10 PM</span>
+                <span id="storeStatusText">Open Now</span>
+            </div>
+
+            <div id="waitTimeWarningBanner" class="hidden w-full bg-amber-500/10 border border-amber-500/30 rounded-xl p-3 mb-6 text-xs text-amber-400 flex items-center gap-2 justify-center">
+                <span>⚠️</span> <span id="waitTimeWarningText">Kitchen is currently running a slightly higher wait time.</span>
             </div>
 
             <div class="w-full space-y-3">
@@ -34,7 +38,7 @@
             </div>
 
             <div class="mt-12 text-center">
-                <a href="owner.html" class="text-[10px] text-zinc-600 hover:text-zinc-400 tracking-wider uppercase font-mono">Owner Portal Access</a>
+                <a href="https://instagram.com/el_taco_de_ojo" target="_blank" class="text-xs text-pink-500 hover:text-pink-400 tracking-wider font-medium flex items-center justify-center gap-1.5"><span>📷</span> @el_taco_de_ojo</a>
             </div>
         </div>
 
@@ -135,13 +139,13 @@
             get cart() { return JSON.parse(localStorage.getItem('foodtruck_cart')) || []; },
             set cart(val) { localStorage.setItem('foodtruck_cart', JSON.stringify(val)); },
             get locations() { return JSON.parse(localStorage.getItem('foodtruck_locations')) || [
-                { id: 1, name: "Downtown Lot", address: "742 S 7th St, Phoenix, AZ 85004" }, 
-                { id: 2, name: "Central Station Spot", address: "1500 N Central Ave, Phoenix, AZ 85004" }
+                { id: 1, name: "Downtown Lot", address: "742 S 7th St, Phoenix, AZ 85004" }
             ]; },
             get activeLocationId() { return parseInt(localStorage.getItem('foodtruck_active_loc')) || 1; },
             get isOpen() { return JSON.parse(localStorage.getItem('foodtruck_isopen')) ?? true; },
             get orders() { return JSON.parse(localStorage.getItem('foodtruck_orders')) || []; },
             set orders(val) { localStorage.setItem('foodtruck_orders', JSON.stringify(val)); },
+            get extraWait() { return localStorage.getItem('foodtruck_extrawait') || ''; },
             get menu() { return JSON.parse(localStorage.getItem('foodtruck_menu')) || [
                 { id: 1, category: "Tacos & Specialties", name: "Taco", price: 3.50, desc: "Meat, cilantro, onion (Asada, Pastor, Cabeza, Birria, Pollo).", prep: "2 mins", soldOut: false, hasMeat: true },
                 { id: 2, category: "Tacos & Specialties", name: "Vampiro", price: 4.50, desc: "Meat, cheese, cilantro and onion on crispy tortilla.", prep: "3 mins", soldOut: false, hasMeat: true },
@@ -176,10 +180,22 @@
             if (statusBadge && statusText) {
                 if (app.isOpen) {
                     statusBadge.className = "bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-4 py-2 text-xs mb-6 text-emerald-400 flex items-center gap-2 w-full justify-center";
-                    statusText.innerText = "Open Now • Serving Until 10 PM";
+                    statusText.innerText = "Open Now";
                 } else {
                     statusBadge.className = "bg-rose-500/10 border border-rose-500/30 rounded-xl px-4 py-2 text-xs mb-6 text-rose-400 flex items-center gap-2 w-full justify-center";
                     statusText.innerText = "Closed Right Now";
+                }
+            }
+
+            const waitBanner = document.getElementById('waitTimeWarningBanner');
+            const waitText = document.getElementById('waitTimeWarningText');
+            const extra = app.extraWait;
+            if (waitBanner && waitText) {
+                if (extra) {
+                    waitBanner.classList.remove('hidden');
+                    waitText.innerText = extra === '15' ? "Kitchen is slightly busy (+15m wait time)." : "Kitchen is very busy (+30m wait time).";
+                } else {
+                    waitBanner.classList.add('hidden');
                 }
             }
         }
@@ -197,19 +213,9 @@
         function renderPopularHighlights() {
             const container = document.getElementById('popularHighlightsContainer');
             if (!container) return;
-            const counts = {};
-            app.orders.forEach(o => {
-                o.cartSnapshot?.forEach(item => {
-                    counts[item.name] = (counts[item.name] || 0) + item.quantity;
-                });
-            });
-            const sorted = Object.entries(counts).sort((a,b) => b[1] - a[1]);
-            const top3 = sorted.slice(0, 3).map(x => x[0]);
             const defaults = ["Quesabirria w/ Consomé", "Carne Asada Fries", "Taco"];
-            const highlights = [top3[0] || defaults[0], top3[1] || defaults[1], top3[2] || defaults[2]];
-            
-            container.innerHTML = highlights.map((name, idx) => {
-                const labels = ["TOP ITEM", "RUNNER UP", "POPULAR"];
+            container.innerHTML = defaults.map((name, idx) => {
+                const labels = ["TOP ITEM", "POPULAR", "FAVORITE"];
                 const itemObj = app.menu.find(m => m.name.toLowerCase() === name.toLowerCase()) || app.menu[0];
                 return `<div onclick="openItemModal(${itemObj.id})" class="bg-zinc-950/60 p-2 rounded-lg border border-zinc-800 cursor-pointer hover:border-pink-500 transition"><span class="text-[9px] text-zinc-400 block font-semibold">${labels[idx]}</span><span class="font-bold text-zinc-200 text-[11px] truncate block">${itemObj.name}</span></div>`;
             }).join('');
@@ -221,14 +227,13 @@
             const categories = [...new Set(app.menu.map(i => i.category))];
             container.innerHTML = categories.map(cat => `
                 <div>
-                    <h3 class="font-bold text-amber-500 mb-3 text-sm">🔥 ${cat}</h3>
+                    <h3 class="font-bold text-pink-500 mb-3 text-sm">🔥 ${cat}</h3>
                     <div class="space-y-3">
                         ${app.menu.filter(i => i.category === cat).map(item => `
                             <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-xl flex justify-between items-center ${item.soldOut ? 'opacity-50' : ''}">
                                 <div>
                                     <h4 class="font-bold text-sm flex items-center gap-2">${item.name}${item.soldOut ? '<span class="text-[10px] bg-rose-500/20 text-rose-400 px-1.5 py-0.5 rounded font-mono">SOLD OUT</span>' : ''}</h4>
-                                    <p class="text-xs text-zinc-400 mt-0.5">${item.desc}</p>
-                                    <div class="flex items-center gap-3 mt-2"><span class="text-sm font-semibold text-pink-500">$${item.price.toFixed(2)}</span><span class="text-[10px] text-zinc-500">(~${item.prep})</span></div>
+                                    <p class="text-xs text-zinc-400 mt-0.5">${item.desc}</p>                                     <div class="flex items-center gap-3 mt-2"><span class="text-sm font-semibold text-pink-500">$${item.price.toFixed(2)}</span><span class="text-[10px] text-zinc-500">(~${item.prep})</span></div>
                                 </div>
                                 <button ${item.soldOut ? 'disabled' : ''} onclick="openItemModal(${item.id})" class="bg-pink-600 hover:bg-pink-500 disabled:bg-zinc-800 text-white px-3 py-1.5 rounded-lg text-xs font-semibold h-8 min-w-[55px] flex items-center justify-center shadow">Add +</button>
                             </div>
@@ -380,6 +385,7 @@
             const summary = cart.map(i => `${i.quantity}x ${i.name}`).join(', ');
             const total = cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
             
+            const extraAddMins = parseInt(app.extraWait) || 0;
             const newOrder = {
                 id: ticketId,
                 name: finalCustomerName,
@@ -388,7 +394,8 @@
                 total,
                 timestamp: Date.now(),
                 notes,
-                cartSnapshot: [...cart]
+                cartSnapshot: [...cart],
+                extraWaitMins: extraAddMins
             };
 
             let orders = app.orders;
@@ -418,11 +425,12 @@
             }
             container.innerHTML = orders.map(o => {
                 const waitMins = Math.floor((Date.now() - o.timestamp) / 60000);
+                const extraAdded = o.extraWaitMins || 0;
                 return `
                     <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-xl flex justify-between items-center">
                         <div>
                             <span class="text-xs text-pink-500 font-mono font-bold">Ticket #${o.id} • ${o.name}</span>
-                            <div class="text-[11px] text-zinc-400 mt-0.5">Wait time: ~${waitMins}m</div>
+                            <div class="text-[11px] text-zinc-400 mt-0.5">Elapsed time: ~${waitMins}m ${extraAdded ? `(+${extraAdded}m kitchen delay)` : ''}</div>
                             <span class="inline-block mt-2 px-2.5 py-1 rounded-full text-xs font-medium ${o.status === 'Preparing' ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'}">${o.status}</span>
                         </div>
                     </div>
