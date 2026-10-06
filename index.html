@@ -25,11 +25,11 @@
 
             <div id="storeStatusBadge" class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-4 py-2 text-xs mb-6 text-emerald-400 flex items-center gap-2 w-full justify-center">
                 <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span id="storeStatusText">Open Now</span>
+                <span id="storeStatusText">Open Now • Until 6:00 PM</span>
             </div>
 
             <div id="waitTimeWarningBanner" class="hidden w-full bg-amber-500/10 border border-amber-500/30 rounded-xl p-3 mb-6 text-xs text-amber-400 flex items-center gap-2 justify-center">
-                <span>⚠️</span> <span id="waitTimeWarningText">Kitchen is currently running a slightly higher wait time.</span>
+                <span>⚠️️</span> <span id="waitTimeWarningText">Kitchen is currently running a slightly higher wait time.</span>
             </div>
 
             <div class="w-full space-y-3">
@@ -143,21 +143,22 @@
             ]; },
             get activeLocationId() { return parseInt(localStorage.getItem('foodtruck_active_loc')) || 1; },
             get isOpen() { return JSON.parse(localStorage.getItem('foodtruck_isopen')) ?? true; },
+            get closingTime() { return localStorage.getItem('foodtruck_closingtime') || "6:00 PM"; },
             get orders() { return JSON.parse(localStorage.getItem('foodtruck_orders')) || []; },
             set orders(val) { localStorage.setItem('foodtruck_orders', JSON.stringify(val)); },
             get extraWait() { return localStorage.getItem('foodtruck_extrawait') || ''; },
             get menu() { return JSON.parse(localStorage.getItem('foodtruck_menu')) || [
-                { id: 1, category: "Tacos & Specialties", name: "Taco", price: 3.50, desc: "Meat, cilantro, onion (Asada, Pastor, Cabeza, Birria, Pollo).", prep: "2 mins", soldOut: false, hasMeat: true },
-                { id: 2, category: "Tacos & Specialties", name: "Vampiro", price: 4.50, desc: "Meat, cheese, cilantro and onion on crispy tortilla.", prep: "3 mins", soldOut: false, hasMeat: true },
-                { id: 3, category: "Tacos & Specialties", name: "Quesabirria w/ Consomé", price: 5.50, desc: "Meat, cheese, cilantro, onion and rich beef broth consomé.", prep: "4 mins", soldOut: false, hasMeat: true },
-                { id: 4, category: "Tacos & Specialties", name: "Quesacamaron w/ Broth", price: 6.00, desc: "Shrimp, cheese, pico de gallo and its broth.", prep: "4 mins", soldOut: false, hasMeat: false },
-                { id: 5, category: "Main Entrées & Plates", name: "Burrito", price: 12.00, desc: "Meat, rice, beans, cabbage, cilantro, onion, guacamole.", prep: "5 mins", soldOut: false, hasMeat: true },
-                { id: 6, category: "Main Entrées & Plates", name: "Torta w/ Fries", price: 15.50, desc: "Meat, mayo, beans, chipotle sauce, cabbage, cilantro, onion, tomato, avocado, queso fresco, jalapeños w/ fries.", prep: "6 mins", soldOut: false, hasMeat: true },
-                { id: 7, category: "Main Entrées & Plates", name: "Carne Asada Fries", price: 15.00, desc: "Fries, meat, cheese, chipotle sauce, sour cream, avocado sauce, topped with guacamole.", prep: "5 mins", soldOut: false, hasMeat: true },
-                { id: 8, category: "Main Entrées & Plates", name: "Birria Nachos", price: 14.00, desc: "Meat, tortilla chips, nacho cheese, pico, jalapeños.", prep: "5 mins", soldOut: false, hasMeat: true },
-                { id: 9, category: "Main Entrées & Plates", name: "1/2 & 1/2", price: 17.00, desc: "Half Carne Asada Fries & half Birria Nachos.", prep: "6 mins", soldOut: false, hasMeat: false },
-                { id: 10, category: "Refreshing Drinks", name: "Agua Fresca", price: 4.00, desc: "Limonada de Pepino, Jamaica, Horchata.", isDrink: true, options: ["Limonada de Pepino", "Jamaica", "Horchata"], prep: "1 min", soldOut: false },
-                { id: 11, category: "Refreshing Drinks", name: "Mexican Coke / Jarritos", price: 3.50, desc: "Authentic bottled cane sugar beverages.", prep: "1 min", soldOut: false }
+                { id: 1, category: "Tacos & Specialties", name: "Taco", price: 3.50, markdownPrice: null, desc: "Meat, cilantro, onion (Asada, Pastor, Cabeza, Birria, Pollo).", prep: "2 mins", soldOut: false, hasMeat: true },
+                { id: 2, category: "Tacos & Specialties", name: "Vampiro", price: 4.50, markdownPrice: null, desc: "Meat, cheese, cilantro and onion on crispy tortilla.", prep: "3 mins", soldOut: false, hasMeat: true },
+                { id: 3, category: "Tacos & Specialties", name: "Quesabirria w/ Consomé", price: 5.50, markdownPrice: null, desc: "Meat, cheese, cilantro, onion and rich beef broth consomé.", prep: "4 mins", soldOut: false, hasMeat: true },
+                { id: 4, category: "Tacos & Specialties", name: "Quesacamaron w/ Broth", price: 6.00, markdownPrice: null, desc: "Shrimp, cheese, pico de gallo and its broth.", prep: "4 mins", soldOut: false, hasMeat: false },
+                { id: 5, category: "Main Entrées & Plates", name: "Burrito", price: 12.00, markdownPrice: null, desc: "Meat, rice, beans, cabbage, cilantro, onion, guacamole.", prep: "5 mins", soldOut: false, hasMeat: true },
+                { id: 6, category: "Main Entrées & Plates", name: "Torta w/ Fries", price: 15.50, markdownPrice: null, desc: "Meat, mayo, beans, chipotle sauce, cabbage, cilantro, onion, tomato, avocado, queso fresco, jalapeños w/ fries.", prep: "6 mins", soldOut: false, hasMeat: true },
+                { id: 7, category: "Main Entrées & Plates", name: "Carne Asada Fries", price: 15.00, markdownPrice: null, desc: "Fries, meat, cheese, chipotle sauce, sour cream, avocado sauce, topped with guacamole.", prep: "5 mins", soldOut: false, hasMeat: true },
+                { id: 8, category: "Main Entrées & Plates", name: "Birria Nachos", price: 14.00, markdownPrice: null, desc: "Meat, tortilla chips, nacho cheese, pico, jalapeños.", prep: "5 mins", soldOut: false, hasMeat: true },
+                { id: 9, category: "Main Entrées & Plates", name: "1/2 & 1/2", price: 17.00, markdownPrice: null, desc: "Half Carne Asada Fries & half Birria Nachos.", prep: "6 mins", soldOut: false, hasMeat: false },
+                { id: 10, category: "Refreshing Drinks", name: "Agua Fresca", price: 4.00, markdownPrice: null, desc: "Limonada de Pepino, Jamaica, Horchata.", isDrink: true, options: ["Limonada de Pepino", "Jamaica", "Horchata"], prep: "1 min", soldOut: false },
+                { id: 11, category: "Refreshing Drinks", name: "Mexican Coke / Jarritos", price: 3.50, markdownPrice: null, desc: "Authentic bottled cane sugar beverages.", prep: "1 min", soldOut: false }
             ]; }
         };
 
@@ -177,10 +178,11 @@
 
             const statusBadge = document.getElementById('storeStatusBadge');
             const statusText = document.getElementById('storeStatusText');
+            const closing = app.closingTime;
             if (statusBadge && statusText) {
                 if (app.isOpen) {
                     statusBadge.className = "bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-4 py-2 text-xs mb-6 text-emerald-400 flex items-center gap-2 w-full justify-center";
-                    statusText.innerText = "Open Now";
+                    statusText.innerText = `Open Now • Until ${closing}`;
                 } else {
                     statusBadge.className = "bg-rose-500/10 border border-rose-500/30 rounded-xl px-4 py-2 text-xs mb-6 text-rose-400 flex items-center gap-2 w-full justify-center";
                     statusText.innerText = "Closed Right Now";
@@ -229,15 +231,26 @@
                 <div>
                     <h3 class="font-bold text-pink-500 mb-3 text-sm">🔥 ${cat}</h3>
                     <div class="space-y-3">
-                        ${app.menu.filter(i => i.category === cat).map(item => `
-                            <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-xl flex justify-between items-center ${item.soldOut ? 'opacity-50' : ''}">
-                                <div>
-                                    <h4 class="font-bold text-sm flex items-center gap-2">${item.name}${item.soldOut ? '<span class="text-[10px] bg-rose-500/20 text-rose-400 px-1.5 py-0.5 rounded font-mono">SOLD OUT</span>' : ''}</h4>
-                                    <p class="text-xs text-zinc-400 mt-0.5">${item.desc}</p>                                     <div class="flex items-center gap-3 mt-2"><span class="text-sm font-semibold text-pink-500">$${item.price.toFixed(2)}</span><span class="text-[10px] text-zinc-500">(~${item.prep})</span></div>
+                        ${app.menu.filter(i => i.category === cat).map(item => {
+                            const hasSale = item.markdownPrice !== null && item.markdownPrice !== undefined && item.markdownPrice < item.price;
+                            const effectivePrice = hasSale ? item.markdownPrice : item.price;
+                            return `
+                                <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-xl flex justify-between items-center ${item.soldOut ? 'opacity-50' : ''}">
+                                    <div>
+                                        <h4 class="font-bold text-sm flex items-center gap-2">
+                                            ${item.name}${item.soldOut ? '<span class="text-[10px] bg-rose-500/20 text-rose-400 px-1.5 py-0.5 rounded font-mono">SOLD OUT</span>' : ''}
+                                            ${hasSale ? '<span class="text-[10px] bg-pink-500/20 text-pink-400 px-1.5 py-0.5 rounded font-mono font-bold">SALE</span>' : ''}
+                                        </h4>
+                                        <p class="text-xs text-zinc-400 mt-0.5">${item.desc}</p>
+                                        <div class="flex items-center gap-3 mt-2">
+                                            ${hasSale ? `<span class="text-sm font-bold text-pink-400">$${effectivePrice.toFixed(2)}</span><span class="text-xs text-zinc-500 line-through">$${item.price.toFixed(2)}</span>` : `<span class="text-sm font-semibold text-pink-500">$${item.price.toFixed(2)}</span>`}
+                                            <span class="text-[10px] text-zinc-500">(~${item.prep})</span>
+                                        </div>
+                                    </div>
+                                    <button ${item.soldOut ? 'disabled' : ''} onclick="openItemModal(${item.id})" class="bg-pink-600 hover:bg-pink-500 disabled:bg-zinc-800 text-white px-3 py-1.5 rounded-lg text-xs font-semibold h-8 min-w-[55px] flex items-center justify-center shadow">Add +</button>
                                 </div>
-                                <button ${item.soldOut ? 'disabled' : ''} onclick="openItemModal(${item.id})" class="bg-pink-600 hover:bg-pink-500 disabled:bg-zinc-800 text-white px-3 py-1.5 rounded-lg text-xs font-semibold h-8 min-w-[55px] flex items-center justify-center shadow">Add +</button>
-                            </div>
-                        `).join('')}
+                            `;
+                        }).join('')}
                     </div>
                 </div>
             `).join('');
@@ -304,12 +317,14 @@
                 itemName += ` (${extraDetails.join(', ')})`;
             }
 
+            const effectivePrice = (currentModalItem.markdownPrice !== null && currentModalItem.markdownPrice !== undefined && currentModalItem.markdownPrice < currentModalItem.price) ? currentModalItem.markdownPrice : currentModalItem.price;
+
             let cart = app.cart;
             const existing = cart.find(c => c.name === itemName);
             if (existing) {
                 existing.quantity += currentModalQtyVal;
             } else {
-                cart.push({ id: currentModalItem.id, name: itemName, price: currentModalItem.price, quantity: currentModalQtyVal });
+                cart.push({ id: currentModalItem.id, name: itemName, price: effectivePrice, quantity: currentModalQtyVal });
             }
             app.cart = cart;
             closeItemModal();
