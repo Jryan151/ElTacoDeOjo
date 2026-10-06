@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Táo de Ojo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-zinc-950 text-zinc-100 font-sans min-h-screen pb-20 flex flex-col justify-between">
+    <div class="max-w-md mx-auto w-full flex-grow">
+        <div id="landingView" class="p-6 flex flex-col items-center justify-center min-h-[90vh] text-center">
+            <div class="w-24 h-24 rounded-full border-2 border-pink-500 p-1 mb-4 flex items-center justify-center">
+                <span class="text-4xl">🌮</span>
+            </div>
+            <h1 class="text-3xl font-serif font-bold italic tracking-wide mb-1">El Táo de Ojo</h1>
+            <p class="text-zinc-400 text-sm mb-3">Authentic Street Tacos & Specialties</p>
+            
+            <div class="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-3 mb-4 text-left">
+                <div class="flex justify-between items-center mb-1">
+                    <label class="text-[11px] text-zinc-400 font-medium">📍 Active Truck Location:</label>
+                    <button onclick="openLocationManager()" class="text-[11px] text-pink-400 hover:underline">Manage Locations</button>
+                </div>
+                <select id="activeLocationSelect" onchange="changeActiveLocation(this.value)" class="w-full bg-zinc-950 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-200 focus:outline-none focus:border-pink-500"></select>
+            </div>
+
+            <div class="bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2 text-xs mb-6 text-emerald-400 flex items-center gap-2 w-full justify-center">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                Open Now • Serving Until 10 PM
+            </div>
+
+            <div class="w-full space-y-3">
+                <button onclick="switchView('menu')" class="w-full bg-pink-600 hover:bg-pink-500 text-white font-semibold py-3.5 rounded-xl transition shadow-lg shadow-pink-600/20">Start Order</button>
+                <button onclick="switchView('tracker')" class="w-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-200 font-medium py-3 rounded-xl transition flex items-center justify-center gap-2 text-sm"><span>📍</span> Track Order Status</button>
+            </div>
+
+            <div class="mt-12 text-center">
+                <button onclick="promptOwnerLogin()" class="text-[10px] text-zinc-600 hover:text-zinc-400 tracking-wider uppercase font-mono">Owner Portal Access</button>
+            </div>
+        </div>
+
+        <div id="menuView" class="p-4 hidden">
+            <div class="flex items-center justify-between mb-4 sticky top-0 bg-zinc-950/90 backdrop-blur py-2 z-10 border-b border-zinc-900">
+                <button onclick="switchView('landing')" class="text-zinc-400 text-sm hover:text-white">← Back</button>
+                <h2 class="font-bold text-lg">Order Menu</h2>
+                <div class="w-10"></div>
+            </div>
+            <div class="bg-gradient-to-r from-pink-950/40 to-amber-950/40 border border-pink-500/30 rounded-xl p-3 mb-5 text-xs">
+                <div class="font-bold text-pink-400 mb-1 flex items-center gap-1"><span>🔥</span> Popular Item Highlights</div>
+                <div class="grid grid-cols-3 gap-2 text-center mt-2">
+                    <div class="bg-zinc-950/60 p-2 rounded-lg border border-zinc-800"><span class="text-[10px] text-zinc-400 block font-semibold">TODAY</span><span class="font-bold text-zinc-200 text-[11px] truncate block">Quesabirria</span></div>
+                    <div class="bg-zinc-950/60 p-2 rounded-lg border border-zinc-800"><span class="text-[10px] text-zinc-400 block font-semibold">THIS WEEK</span><span class="font-bold text-zinc-200 text-[11px] truncate block">Carne Asada Fries</span></div>
+                    <div class="bg-zinc-950/60 p-2 rounded-lg border border-zinc-800"><span class="text-[10px] text-zinc-400 block font-semibold">THIS MONTH</span><span class="font-bold text-zinc-200 text-[11px] truncate block">Tacos (Asada)</span></div>
+                </div>
+            </div>
+            <div id="menuContainer" class="space-y-6"></div>
+            <div class="fixed bottom-4 left-4 right-4 max-w-md mx-auto">
+                <button onclick="openCartModal()" class="w-full bg-pink-600 hover:bg-pink-500 text-white font-semibold py-3 rounded-xl shadow-xl flex justify-between px-5 items-center">
+                    <span id="cartCountBadge" class="bg-pink-700 px-2 py-0.5 rounded-md text-xs font-bold">0 items</span>
+                    <span>View Cart</span>
+                    <span id="cartTotalBadge">$0.00</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="trackerView" class="p-4 hidden">
+            <div class="flex items-center justify-between mb-4 border-b border-zinc-900 pb-2">
+                <button onclick="switchView('landing')" class="text-zinc-400 text-sm hover:text-white">← Back</button>
+                <h2 class="font-bold text-lg">Order Tracker</h2>
+                <div class="w-10"></div>
+            </div>
+            <div class="space-y-3" id="activeOrdersList"></div>
+        </div>
+
+        <div id="ownerView" class="p-4 hidden">
+            <div class="flex items-center justify-between mb-4 border-b border-zinc-900 pb-2">
+                <button onclick="switchView('landing')" class="text-zinc-400 text-sm hover:text-white">← Logout</button>
+                <h2 class="font-bold text-lg text-amber-500">Owner Portal</h2>
+                <div class="w-10"></div>
+            </div>
+            <div class="mb-6">
+                <button onclick="switchView('analytics')" class="w-full bg-amber-600/10 hover:bg-amber-600/20 border border-amber-500/30 text-amber-400 font-semibold py-3 rounded-xl transition flex items-center justify-between px-4">
+                    <span class="flex items-center gap-2">📊 View Performance & Analytics Graphs</span>
+                    <span>→</span>
+                </button>
+            </div>
+            <div class="bg-zinc-900 border border-zinc-800 rounded-xl mb-4 p-4">
+                <h3 class="font-semibold text-sm text-zinc-300 mb-2">Manage Active Locations</h3>
+                <div id="ownerLocationList" class="space-y-2 mb-3"></div>
+                <button onclick="addNewLocationPrompt()" class="w-full bg-zinc-950 border border-zinc-800 text-pink-400 py-2 rounded-lg text-xs font-semibold">+ Add New Location</button>
+            </div>
+            <h3 class="font-semibold text-sm text-zinc-400 mb-3">Incoming Orders Management</h3>
+            <div class="space-y-3 mb-6" id="ownerOrdersList"></div>
+        </div>
+
+        <div id="analyticsView" class="p-4 hidden">
+            <div class="flex items-center justify-between mb-4 border-b border-zinc-900 pb-2">
+                <button onclick="switchView('owner')" class="text-zinc-400 text-sm hover:text-white">← Portal</button>
+                <h2 class="font-bold text-lg text-amber-500">Revenue & Trends</h2>
+                <div class="w-10"></div>
+            </div>
+            <div class="space-y-4">
+                <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-xl">
+                    <div class="flex justify-between items-center mb-2"><span class="text-xs font-bold text-zinc-300">📈 Daily Brief (Revenue by Hour)</span><span id="dailyRevTotal" class="text-xs text-emerald-400 font-bold">$845.00</span></div>
+                    <div class="h-28 flex items-end gap-1.5 pt-4 border-b border-zinc-800 pb-2 px-1" id="hourlyChartContainer"></div>
+                    <div class="flex justify-between text-[9px] text-zinc-500 mt-1"><span>12 PM</span><span>4 PM</span><span>8 PM</span><span>12 AM</span></div>
+                </div>
+                <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-xl">
+                    <div class="flex justify-between items-center mb-2"><span class="text-xs font-bold text-zinc-300">📊 Monthly Brief (Revenue by Day)</span><span id="monthlyRevTotal" class="text-xs text-emerald-400 font-bold">$7,420.00</span></div>
+                    <div class="h-24 flex items-end gap-1 pt-4 border-b border-zinc-800 pb-2 px-1 overflow-x-auto" id="dailyChartContainer"></div>
+                </div>
+                <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-xl">
+                    <div class="flex justify-between items-center mb-2"><span class="text-xs font-bold text-zinc-300">📅 Annual Brief (Monthly Revenue)</span><span id="yearlyRevTotal" class="text-xs text-emerald-400 font-bold">$54,300.00</span></div>
+                    <div class="h-24 flex items-end gap-2 pt-4 border-b border-zinc-800 pb-2 px-1" id="yearlyChartContainer"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="locationModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-zinc-900 border border-zinc-800 w-full max-w-sm rounded-2xl p-5 space-y-4">
+            <div class="flex justify-between items-center border-b border-zinc-800 pb-3"><h3 class="font-bold text-lg">Manage Locations</h3><button onclick="closeLocationManager()" class="text-zinc-400 hover:text-white text-sm">✕</button></div>
+            <div id="modalLocationList" class="space-y-2 max-h-48 overflow-y-auto"></div>
+            <div class="pt-2 border-t border-zinc-800 space-y-2">
+                <input type="text" id="newLocName" placeholder="Location Name" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-2.5 text-xs text-zinc-200">
+                <input type="text" id="newLocAddress" placeholder="Street Address" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-2.5 text-xs text-zinc-200">
+                <button onclick="saveNewLocation()" class="w-full bg-pink-600 hover:bg-pink-500 text-white font-semibold py-2.5 rounded-xl text-xs transition">Add Location</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="drinkModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-zinc-900 border border-zinc-800 w-full max-w-sm rounded-2xl p-5 space-y-4">
+            <div class="flex justify-between items-center"><h3 id="drinkModalTitle" class="font-bold text-lg">Customize Drink</h3><button onclick="closeDrinkModal()" class="text-zinc-400 hover:text-white text-sm">✕</button></div>
+            <div><label class="block text-xs text-zinc-400 mb-1">Select Flavor Option</label><select id="drinkFlavorSelect" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-sm text-zinc-200"></select></div>
+            <button onclick="addCustomDrinkToCart()" class="w-full bg-pink-600 hover:bg-pink-500 text-white font-semibold py-3 rounded-xl transition">Add to Cart</button>
+        </div>
+    </div>
+
+    <div id="cartModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-zinc-900 border border-zinc-800 w-full max-w-sm rounded-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-zinc-800 pb-3"><h3 class="font-bold text-lg">Your Order Cart</h3><button onclick="closeCartModal()" class="text-zinc-400 hover:text-white text-sm">✕</button></div>
+            <div id="cartItemsList" class="space-y-3"></div>
+            <div class="space-y-3 pt-2 border-t border-zinc-800">
+                <div><label class="block text-xs text-zinc-400 mb-1">Your Name</label><input type="text" id="customerName" placeholder="Enter name" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-sm text-zinc-200"></div>
+                <div><label class="block text-xs text-zinc-400 mb-1">Special Requests / Notes</label><textarea id="customerOrderNotes" placeholder="Notes..." class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-sm text-zinc-200 h-20 resize-none"></textarea></div>
+            </div>
+            <button onclick="submitOrder()" class="w-full bg-pink-600 hover:bg-pink-500 text-white font-semibold py-3 rounded-xl transition">Submit Pre-Order</button>
+        </div>
+    </div>
+
+    <script>
+        const app = {
+            cart: [],
+            locations: [{ id: 1, name: "Downtown Lot", address: "742 S 7th St, Phoenix, AZ 85004" }, { id: 2, name: "Central Station Spot", address: "1500 N Central Ave, Phoenix, AZ 85004" }],
+            activeLocationId: 1,
+            orders: [
+                { id: "101", name: "Carlos", items: "2x Taco (Asada), 1x Agua Fresca (Horchata)", status: "Preparing", total: 11.00, timestamp: Date.now() - 360000, notes: "Extra spicy please" },
+                { id: "102", name: "Maria", items: "1x Burrito", status: "Ready", total: 12.00, timestamp: Date.now() - 900000, notes: "" }
+            ],
+            menu: [
+                { id: 1, category: "Tacos & Specialties", name: "Taco", price: 3.50, desc: "Meat, cilantro, onion (Asada, Pastor, Cabeza, Birria, Pollo).", prep: "2 mins" },
+                { id: 2, category: "Tacos & Specialties", name: "Vampiro", price: 4.50, desc: "Meat, cheese, cilantro and onion on crispy tortilla.", prep: "3 mins" },
+                { id: 3, category: "Tacos & Specialties", name: "Quesabirria w/ Consomé", price: 5.50, desc: "Meat, cheese, cilantro, onion and rich beef broth consomé.", prep: "4 mins" },
+                { id: 4, category: "Tacos & Specialties", name: "Quesacamaron w/ Broth", price: 6.00, desc: "Shrimp, cheese, pico de gallo and its broth.", prep: "4 mins" },
+                { id: 5, category: "Heavyweights & Plates", name: "Burrito", price: 12.00, desc: "Meat, rice, beans, cabbage, cilantro, onion, guacamole.", prep: "5 mins" },
+                { id: 6, category: "Heavyweights & Plates", name: "Torta w/ Fries", price: 15.50, desc: "Meat, mayo, beans, chipotle sauce, cabbage, cilantro, onion, tomato, avocado, queso fresco, jalapeños w/ fries.", prep: "6 mins" },
+                { id: 7, category: "Heavyweights & Plates", name: "Carne Asada Fries", price: 15.00, desc: "Fries, meat, cheese, chipotle sauce, sour cream, avocado sauce, topped with guacamole.", prep: "5 mins" },
+                { id: 8, category: "Heavyweights & Plates", name: "Birria Nachos", price: 14.00, desc: "Meat, tortilla chips, nacho cheese, pico, jalapeños.", prep: "5 mins" },
+                { id: 9, category: "Heavyweights & Plates", name: "1/2 & 1/2", price: 17.00, desc: "Half Carne Asada Fries & half Birria Nachos.", prep: "6 mins" },
+                { id: 10, category: "Refreshing Drinks", name: "Agua Fresca", price: 4.00, desc: "Limonada de Pepino, Jamaica, Horchata.", isDrink: true, options: ["Limonada de Pepino", "Jamaica", "Horchata"], prep: "1 min" },
+                { id: 11, category: "Refreshing Drinks", name: "Mexican Coke / Jarritos", price: 3.50, desc: "Authentic bottled cane sugar beverages.", prep: "1 min" }
+            ]
+        };
+        function initApp() { renderLocationDropdowns(); }
+        function renderLocationDropdowns() {
+            const select = document.getElementById('activeLocationSelect');
+            if (select) select.innerHTML = app.locations.map(l => `<option value="${l.id}" ${l.id === app.activeLocationId ? 'selected' : ''}>${l.name} — ${l.address}</option>`).join('');
+        }
+        function changeActiveLocation(id) { app.activeLocationId = parseInt(id); }
+        function openLocationManager() { renderLocationManagerList(); document.getElementById('locationModal').style.display = 'flex'; }
+        function closeLocationManager() { document.getElementById('locationModal').style.display = 'none'; }
+        function renderLocationManagerList() {
+            const container = document.getElementById('modalLocationList');
+            const ownerContainer = document.getElementById('ownerLocationList');
+            const html = app.locations.map(l => `
+                <div class="bg-zinc-950 p-2.5 rounded-lg border border-zinc-800 flex justify-between items-center text-xs">
+                    <div><div class="font-bold text-zinc-200">${l.name}</div><div class="text-zinc-500 text-[10px]">${l.address}</div></div>
+                    ${app.locations.length > 1 ? `<button onclick="deleteLocation(${l.id})" class="text-rose-400 hover:underline">Delete</button>` : ''}
+                </div>
+            `).join('');
+            if (container) container.innerHTML = html;
+            if (ownerContainer) ownerContainer.innerHTML = html;
+        }
+        function saveNewLocation() {
+            const name = document.getElementById('newLocName').value.trim();
+            const address = document.getElementById('newLocAddress').value.trim();
+            if (!name || !address) { alert("Fill out both fields"); return; }
+            app.locations.push({ id: Date.now(), name, address });
+            document.getElementById('newLocName').value = '';
+            document.getElementById('newLocAddress').value = '';
+            renderLocationDropdowns(); renderLocationManagerList();
+        }
+        function deleteLocation(id) { app.locations = app.locations.filter(l => l.id !== id); renderLocationDropdowns(); renderLocationManagerList(); }
+        function promptOwnerLogin() {
+            const pin = prompt("Enter Owner Access PIN (Hint: 1234):");
+            if (pin === "1234") switchView('owner');
+            else if (pin !== null) alert("Incorrect PIN");
+        }
+        function switchView(view) {
+            ['landingView', 'menuView', 'trackerView', 'ownerView', 'analyticsView'].forEach(v => {
+                const el = document.getElementById(v);
+                if (el) el.style.display = 'none';
+            });
+            if (view === 'landing') document.getElementById('landingView').style.display = 'flex';
+            if (view === 'menu') { document.getElementById('menuView').style.display = 'block'; renderMenu(); }
+            if (view === 'tracker') { document.getElementById('trackerView').style.display = 'block'; renderTracker(); }
+            if (view === 'owner') { document.getElementById('ownerView').style.display = 'block'; renderOwnerPortal(); renderLocationManagerList(); }
+            if (view === 'analytics') { document.getElementById('analyticsView').style.display = 'block'; renderAnalyticsCharts(); }
+        }
+        function renderMenu() {
+            const container = document.getElementById('menuContainer');
+            if (!container) return;
+            const categories = [...new Set(app.menu.map(i => i.category))];
+            container.innerHTML = categories.map(cat => `
+                <div>
+                    <h3 class="font-bold text-amber-500 mb-3 text-sm">🔥 ${cat}</h3>
+                    <div class="space-y-3">
+                        ${app.menu.filter(i => i.category === cat).map(item => `
+                            <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-xl flex justify-between items-center">
+                                <div>
+                                    <h4 class="font-bold text-sm">${item.name}</h4>
+                                    <p class="text-xs text-zinc-400 mt-0.5">${item.desc}</p>                                     <div class="flex items-center gap-3 mt-2"><span class="text-sm font-semibold text-pink-500">$${item.price.toFixed(2)}</span><span class="text-[10px] text-zinc-500">(~${item.prep})</span></div>
+                                </div>
+                                <button onclick="handleItemClick(${item.id})" class="bg-pink-600 hover:bg-pink-500 text-white px-3 py-1.5 rounded-lg text-xs font-semibold">Add +</button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+            updateCartBadges();
+        }
+        let selectedDrinkItem = null;
+        function handleItemClick(id) {
+            const item = app.menu.find(m => m.id === id);
+            if (item.isDrink) {
+                selectedDrinkItem = item;
+                document.getElementById('drinkModalTitle').innerText = `Customize ${item.name}`;
+                document.getElementById('drinkFlavorSelect').innerHTML = item.options.map(opt => `<option value="${opt}">${opt}</option>`).join('');
+                document.getElementById('drinkModal').style.display = 'flex';
+            } else {
+                const existing = app.cart.find(c => c.id === id && !c.notes);
+                if (existing) existing.quantity++;
+                else app.cart.push({ ...item, quantity: 1 });
+                updateCartBadges();
+            }
+        }
+        function closeDrinkModal() { document.getElementById('drinkModal').style.display = 'none'; }
+        function addCustomDrinkToCart() {
+            const flavor = document.getElementById('drinkFlavorSelect').value;
+            app.cart.push({ ...selectedDrinkItem, name: `${selectedDrinkItem.name} (${flavor})`, quantity: 1 });
+            closeDrinkModal(); updateCartBadges();
+        }
+        function updateCartBadges() {
+            const count = app.cart.reduce((sum, item) => sum + item.quantity, 0);
+            const total = app.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            document.getElementById('cartCountBadge').innerText = `${count} items`;
+            document.getElementById('cartTotalBadge').innerText = `$${total.toFixed(2)}`;
+        }
+        function openCartModal() {
+            if (app.cart.length === 0) { alert("Cart is empty!"); return; }
+            document.getElementById('cartItemsList').innerHTML = app.cart.map((item, idx) => `
+                <div class="flex justify-between items-center bg-zinc-950 p-3 rounded-xl border border-zinc-800 text-sm">
+                    <div class="font-bold">${item.quantity}x ${item.name}</div>
+                    <div class="flex items-center gap-3"><span class="text-pink-500 font-semibold">$${(item.price * item.quantity).toFixed(2)}</span><button onclick="removeFromCart(${idx})" class="text-zinc-500 hover:text-rose-400 text-xs">✕</button></div>
+                </div>
+            `).join('');
+            document.getElementById('cartModal').style.display = 'flex';
+        }
+        function closeCartModal() { document.getElementById('cartModal').style.display = 'none'; }
+        function removeFromCart(index) { app.cart.splice(index, 1); updateCartBadges(); if (app.cart.length === 0) closeCartModal(); else openCartModal(); }
+        function submitOrder() {
+            const name = document.getElementById('customerName').value.trim() || "Guest";
+            const notes = document.getElementById('customerOrderNotes').value.trim();
+            const summary = app.cart.map(i => `${i.quantity}x ${i.name}`).join(', ');
+            const total = app.cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+            app.orders.unshift({ id: Date.now().toString().slice(-3), name, items: summary, status: "Preparing", total, timestamp: Date.now(), notes });
+            app.cart = []; closeCartModal(); updateCartBadges(); switchView("tracker");
+        }
+        function renderTracker() {
+            document.getElementById('activeOrdersList').innerHTML = app.orders.map(o => {
+                const waitMins = Math.floor((Date.now() - o.timestamp) / 60000);
+                return `
+                    <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-xl flex justify-between items-center">
+                        <div>
+                            <span class="text-xs text-pink-500 font-mono">Order #${o.id} • ${o.name} (Wait: ${waitMins}m)</span>
+                            <h4 class="font-bold text-sm mt-0.5">${o.items}</h4>
+                            ${o.notes ? `<p class="text-xs text-amber-400 mt-1">Note: ${o.notes}</p>` : ''}
+                            <span class="inline-block mt-2 px-2.5 py-1 rounded-full text-xs font-medium ${o.status === 'Preparing' ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'}">${o.status}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        function renderOwnerPortal() {
+            document.getElementById('ownerOrdersList').innerHTML = app.orders.map(o => {
+                const waitMins = Math.floor((Date.now() - o.timestamp) / 60000);
+                return `
+                    <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-xl flex flex-col gap-3">
+                        <div class="flex justify-between items-start">
+                            <div><span class="text-xs text-amber-500 font-mono">Order #${o.id} (${o.name}) • Active: ${waitMins}m</span><h4 class="font-bold text-sm mt-0.5">${o.items}</h4>${o.notes ? `<p class="text-xs text-amber-400 mt-1">Note: ${o.notes}</p>` : ''}</div>
+                            <span class="font-bold text-emerald-400">$${o.total.toFixed(2)}</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="updateOrderStatus('${o.id}', 'Preparing')" class="flex-1 bg-zinc-800 hover:bg-zinc-700 py-1.5 rounded-lg text-xs font-medium">Prep</button>
+                            <button onclick="updateOrderStatus('${o.id}', 'Ready')" class="flex-1 bg-amber-600 hover:bg-amber-500 py-1.5 rounded-lg text-xs font-medium">Ready</button>
+                            <button onclick="fulfillOrder('${o.id}')" class="flex-1 bg-emerald-600 hover:bg-emerald-500 py-1.5 rounded-lg text-xs font-medium">Fulfill</button>
+                            <button onclick="cancelOrder('${o.id}')" class="bg-rose-950 text-rose-400 border border-rose-500/30 px-3 py-1.5 rounded-lg text-xs font-medium">Cancel</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        function updateOrderStatus(id, newStatus) { const o = app.orders.find(x => x.id === id); if (o) { o.status = newStatus; renderOwnerPortal(); } }
+        function fulfillOrder(id) { app.orders = app.orders.filter(x => x.id !== id); renderOwnerPortal(); }
+        function cancelOrder(id) { if (confirm("Cancel order?")) { app.orders = app.orders.filter(x => x.id !== id); renderOwnerPortal(); } }
+        function renderAnalyticsCharts() {
+            const hourlyData = [15, 30, 45, 80, 120, 190, 140, 90, 40];
+            const dailyData = [120, 150, 90, 110, 200, 240, 220, 180, 160, 190, 210, 250, 280, 310, 290, 270, 240, 230, 260, 300, 340, 320, 290, 280, 310, 350, 380, 360, 390, 420];
+            const yearlyData = [3200, 3400, 3900, 4100, 4800, 5200, 5600, 5100, 4700, 4900, 5300, 6100];
+            document.getElementById('dailyRevTotal').innerText = '$845.00';
+            document.getElementById('monthlyRevTotal').innerText = '$7,420.00';
+            document.getElementById('yearlyRevTotal').innerText = '$54,300.00';
+            document.getElementById('hourlyChartContainer').innerHTML = hourlyData.map(val => `<div class="flex-1 bg-pink-600/30 hover:bg-pink-500 rounded-t transition relative group" style="height: ${(val / 190) * 100}%"><span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] bg-zinc-900 border border-zinc-800 px-1 rounded opacity-0 group-hover:opacity-100">$${val}</span></div>`).join('');
+            document.getElementById('dailyChartContainer').innerHTML = dailyData.map(val => `<div class="w-2.5 bg-emerald-500/40 hover:bg-emerald-400 rounded-t transition" style="height: ${(val / 420) * 100}%" title="$${val}"></div>`).join('');
+            document.getElementById('yearlyChartContainer').innerHTML = yearlyData.map(val => `<div class="flex-1 bg-amber-500/40 hover:bg-amber-400 rounded-t transition relative group" style="height: ${(val / 6100) * 100}%"><span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] bg-zinc-900 border border-zinc-800 px-1 rounded opacity-0 group-hover:opacity-100">$${val}</span></div>`).join('');
+        }
+        window.onload = initApp;
+    </script>
+</body>
+</html>
